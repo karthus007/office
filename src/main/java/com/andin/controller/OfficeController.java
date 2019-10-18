@@ -1,5 +1,6 @@
 package com.andin.controller;
 
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,11 +27,11 @@ public class OfficeController {
 	
 	@RequestMapping("/upload")
 	@ResponseBody
-	public Map<String, Object> wordToPdf(){
+	public Map<String, Object> upload(HttpServletRequest req){
 		logger.debug("TestController.getAppInfo method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			officeService.wordToPdf(null, null);
+			String path = req.getServletContext().getRealPath("/") + "upload/";
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);
 			logger.debug("TestController.getAppInfo method execute is successful...");
@@ -49,7 +50,7 @@ public class OfficeController {
 		logger.debug("TestController.getAppInfo method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			officeService.wordToPdf(null, null);
+			String name = URLDecoder.decode(req.getParameter("name"), "UTF-8");
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);
 			logger.debug("TestController.getAppInfo method execute is successful...");
