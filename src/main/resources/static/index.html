@@ -36,7 +36,6 @@
         var file = $("#office")[0].files[0];
         var formData = new FormData();//初始化一个FormData对象
         formData.append("file", file, file.name);//将 部分文件 塞入FormData
-        formData.append("fileName", file.name);//保存文件名字
         $.ajax({
             url: "./office/upload",
             type: "POST",
