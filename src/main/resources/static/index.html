@@ -30,4 +30,33 @@
 	  </div>
 	</div>
 </body>
+<script src="js/jquery-2.1.4.min.js"></script>
+<script>
+	function office(){
+        var file = $("#office")[0].files[0];
+        var formData = new FormData();//初始化一个FormData对象
+        formData.append("file", file, file.name);//将 部分文件 塞入FormData
+        formData.append("fileName", file.name);//保存文件名字
+        $.ajax({
+            url: "./office/upload",
+            type: "POST",
+            data: formData,
+            processData: false,  // 告诉jQuery不要去处理发送的数据
+            contentType: false,   // 告诉jQuery不要去设置Content-Type请求头
+            success: function (res) {
+                if(res.resultCode == "0000"){
+                	 alert("上传成功");
+                }else{
+                	 alert("上传失败");
+                }
+            }
+        });
+    }
+	
+	function pdf(){
+		var name = $("#pdf").val();
+		var url = "./office/download?name=" + name;
+		location.href = encodeURI(encodeURI(url));
+	}
+</script>
 </html>

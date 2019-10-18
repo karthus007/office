@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +24,28 @@ public class OfficeController {
 	@Resource
 	private OfficeService officeService;
 	
-	@RequestMapping("/wordToPdf")
+	@RequestMapping("/upload")
 	@ResponseBody
 	public Map<String, Object> wordToPdf(){
+		logger.debug("TestController.getAppInfo method execute is start...");
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			officeService.wordToPdf(null, null);
+			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
+			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);
+			logger.debug("TestController.getAppInfo method execute is successful...");
+		} catch (Exception e) {
+			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
+			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
+			logger.error("TestController.getAppInfo method execute is error: ", e.getMessage());
+		}
+		return map;
+	}
+	
+	
+	@RequestMapping("/download")
+	@ResponseBody
+	public Map<String, Object> download(HttpServletRequest req){
 		logger.debug("TestController.getAppInfo method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
