@@ -22,9 +22,9 @@ public class OfficeCmdUtil {
     
     private static final String WKHTMLTOPDF_CMD = "wkhtmltopdf ";
     
-    private static final String MONO_CMD_PATH = PropertiesUtil.getProperties("word.path", null);
+    private static final String MONO_CMD_PATH =  StringUtil.getUploadFilePath() + ConstantUtil.MONO_CMD_PATH;
     
-    private static final String DOTNET_CMD_PATH = PropertiesUtil.getProperties("office.path", null);
+    private static final String DOTNET_CMD_PATH = StringUtil.getUploadFilePath() + ConstantUtil.DOTNET_CMD_PATH;
 	
     /**
        * 将office文件转换为html
