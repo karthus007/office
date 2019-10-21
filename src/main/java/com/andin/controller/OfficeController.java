@@ -37,9 +37,23 @@ public class OfficeController {
 		logger.debug("TestController.getAppInfo method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			String path = StringUtil.getUploadFilePath();
+			StringBuffer path = new StringBuffer();
+			path.append(StringUtil.getUploadFilePath());
+			String fileName = part.getSubmittedFileName();
+			if(fileName.endsWith(ConstantUtil.DOC) || fileName.endsWith(ConstantUtil.DOCX)) {
+				path.append(ConstantUtil.DOCX_PATH);
+			}else if(fileName.endsWith(ConstantUtil.XLS) || fileName.endsWith(ConstantUtil.XLSX)) {
+				path.append(ConstantUtil.XLSX_PATH);
+			}else if(fileName.endsWith(ConstantUtil.PPT) || fileName.endsWith(ConstantUtil.PPTX)) {
+				path.append(ConstantUtil.PPTX_PATH);
+			}else {
+				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.UPLOAD_FILE_TYPE_ERROR_CODE);
+				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.UPLOAD_FILE_TYPE_ERROR_MSG);
+				return map;
+			}
+			path.append(fileName);
 			InputStream in = part.getInputStream();
-			OutputStream os = new FileOutputStream(path + part.getSubmittedFileName());
+			OutputStream os = new FileOutputStream(path.toString());
 			byte[] b = new byte[1024*4];
 			int len = 0;
 			while ((len = in.read(b)) != -1) {

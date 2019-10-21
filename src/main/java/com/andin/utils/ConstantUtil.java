@@ -36,6 +36,10 @@ public class ConstantUtil {
 	
 	public static final String DEFAULT_ERROR_MSG = "请求失败";
 	
+	public static final String UPLOAD_FILE_TYPE_ERROR_CODE = "0002";
+	
+	public static final String UPLOAD_FILE_TYPE_ERROR_MSG = "上传的文件类型不支持";
+	
 	
 	/********************* 系统常量 *********************/
 	
@@ -44,17 +48,17 @@ public class ConstantUtil {
 	
 	/********************* 上传文件路径常量 *********************/
 	
-	public static final String DOCX = "docx";
+	public static final String DOCX = ".docx";
 	
-	public static final String DOC = "doc";
+	public static final String DOC = ".doc";
 	
-	public static final String XLSX = "xlsx";
+	public static final String XLSX = ".xlsx";
 	
-	public static final String XLS = "xls";
+	public static final String XLS = ".xls";
 	
-	public static final String PPTX = "pptx";
+	public static final String PPTX = ".pptx";
 	
-	public static final String PPT = "ppt";
+	public static final String PPT = ".ppt";
 	
 	public static final String DOCX_PATH = "docx/";
 	
