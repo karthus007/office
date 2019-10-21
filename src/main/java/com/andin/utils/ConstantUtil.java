@@ -100,7 +100,7 @@ public class ConstantUtil {
 	
 	public static final String MONO_CMD_PATH = "cmd/wordtohtml";
 	
-	public static final String DOTNET_CMD_PATH = "pdf/officetohtml";
+	public static final String DOTNET_CMD_PATH = "cmd/officetohtml";
 	
 	
 	
