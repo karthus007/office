@@ -18,7 +18,6 @@ import javax.servlet.http.Part;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -91,11 +90,11 @@ public class OfficeController {
 			StringBuffer path = new StringBuffer();
 			path.append(StringUtil.getUploadFilePath());
 			if(type.equals(ConstantUtil.DOC) || type.equals(ConstantUtil.DOCX)) {
-				path.append(ConstantUtil.HTML_DOCX_PATH);
+				path.append(ConstantUtil.PDF_DOCX_PATH);
 			}else if(type.equals(ConstantUtil.XLS) || type.equals(ConstantUtil.XLSX)) {
-				path.append(ConstantUtil.HTML_XLSX_PATH);
+				path.append(ConstantUtil.PDF_XLSX_PATH);
 			}else if(type.equals(ConstantUtil.PPT) || type.equals(ConstantUtil.PPTX)) {
-				path.append(ConstantUtil.HTML_PPTX_PATH);
+				path.append(ConstantUtil.PDF_PPTX_PATH);
 			}else {
 				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DOWNLOAD_FILE_TYPE_ERROR_CODE);
 				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DOWNLOAD_FILE_TYPE_ERROR_MSG);
