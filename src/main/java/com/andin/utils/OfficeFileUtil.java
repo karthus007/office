@@ -51,10 +51,18 @@ public class OfficeFileUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static boolean htmlToPdf(String fileInfo, String inputPath, String outputPath) throws Exception {
+	public static boolean htmlToPdfWithWater(String fileInfo, String inputPath, String outputPath) throws Exception {
+		boolean result = false;
 		String htmlFileNamePath = inputPath + fileInfo + ConstantUtil.HTML;	
 		String pdfFileNamePath = outputPath + fileInfo + ConstantUtil.PDF;
-		return OfficeCmdUtil.htmlToPdf(htmlFileNamePath, pdfFileNamePath);
+		result = OfficeCmdUtil.htmlToPdf(htmlFileNamePath, pdfFileNamePath);
+		logger.debug("输入文件为" + fileInfo + ".html, html转pdf的结果为：" + result);
+		if(result) {
+			String waterPdfFileNamePath = outputPath + ConstantUtil.WATER_PATH + fileInfo + ConstantUtil.PDF;
+			result = WaterToPdfUtil.pdfToWater(pdfFileNamePath, waterPdfFileNamePath);
+			logger.debug("输入文件为" + fileInfo + ".pdf, pdf添加水印的结果为：" + result);
+		}
+		return result;
 	}
 	
 	public static boolean officeToPdf(String inputFileName) {
@@ -69,7 +77,7 @@ public class OfficeFileUtil {
 				result = OfficeCmdUtil.wordToHtml(DOCX_PATH + inputFileName, HTML_DOCX_PATH);
 				logger.debug("输入文件为" + inputFileName + " docx转html的结果为：" + result);
 				if(result) {
-					result = htmlToPdf(fileName, HTML_DOCX_PATH, PDF_DOCX_PATH);
+					result = htmlToPdfWithWater(fileName, HTML_DOCX_PATH, PDF_DOCX_PATH);
 					logger.debug("输入文件为" + inputFileName + " html转pdf的结果为：" + result);
 				}
 				
@@ -84,7 +92,7 @@ public class OfficeFileUtil {
 					//将每个html转换成pdf
 					for (int i = 0; i < size; i++) {
 						String name = list.get(i);
-						result = htmlToPdf(name, HTML_XLSX_PATH, PDF_XLSX_PATH);
+						result = htmlToPdfWithWater(name, HTML_XLSX_PATH, PDF_XLSX_PATH);
 					}
 					logger.debug("输入文件为" + inputFileName + " html转pdf的结果为：" + result);
 				}
@@ -94,7 +102,7 @@ public class OfficeFileUtil {
 				result = OfficeCmdUtil.pptToHtml(PPTX_PATH + inputFileName, HTML_PPTX_PATH  + fileName + ConstantUtil.HTML);
 				logger.debug("输入文件为" + inputFileName + " pptx转html的结果为：" + result);
 				if(result) {
-					result = htmlToPdf(fileName, HTML_PPTX_PATH, PDF_PPTX_PATH);
+					result = htmlToPdfWithWater(fileName, HTML_PPTX_PATH, PDF_PPTX_PATH);
 					logger.debug("输入文件为" + inputFileName + " html转pdf的结果为：" + result);
 				}
 			}else {

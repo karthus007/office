@@ -100,6 +100,7 @@ public class OfficeController {
 				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DOWNLOAD_FILE_TYPE_ERROR_MSG);
 				return map;
 			}
+			path.append(ConstantUtil.WATER_PATH);
 			path.append(fileName);
 	        File file = new File(path.toString());
 	        
