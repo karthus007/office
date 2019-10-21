@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.andin.service.OfficeService;
 import com.andin.utils.ConstantUtil;
+import com.andin.utils.StringUtil;
 
 @Controller
 @RequestMapping("/office")
@@ -36,7 +37,7 @@ public class OfficeController {
 		logger.debug("TestController.getAppInfo method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			String path = req.getServletContext().getRealPath("/") + "upload/";
+			String path = StringUtil.getUploadFilePath();
 			InputStream in = part.getInputStream();
 			OutputStream os = new FileOutputStream(path + part.getSubmittedFileName());
 			byte[] b = new byte[1024*4];
