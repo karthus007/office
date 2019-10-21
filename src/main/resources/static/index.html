@@ -52,7 +52,8 @@
 			alert("请选择需上传的文件");
 		}
         var formData = new FormData();//初始化一个FormData对象
-        formData.append("file", file, file.name);//将 部分文件 塞入FormData
+        var name = file.name;
+        formData.append("file", file, name);//将 部分文件 塞入FormData
         $.ajax({
             url: "./office/upload",
             type: "POST",
@@ -61,9 +62,13 @@
             contentType: false,   // 告诉jQuery不要去设置Content-Type请求头
             success: function (res) {
                 if(res.resultCode == "0000"){
-                	 alert("上传成功");
+                	$("#conversion").val(name);
+                	var index = name.lastIndexOf(".");
+                	$("#pdf").val(name.substring(0, index) + ".pdf");
+                	$("#type").val(name.substring(name.lastIndexOf(".")+1));
+                	alert("上传成功");
                 }else{
-                	 alert("上传失败");
+                	alert("上传失败");
                 }
             }
         });
