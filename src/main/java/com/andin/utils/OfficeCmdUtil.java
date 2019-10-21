@@ -44,7 +44,7 @@ public class OfficeCmdUtil {
 			result = CmdToolUtil.executeCmdToResult(cmd, DOTNET_CMD_PATH, null);
 			logger.debug("OfficeUtil.officeToHtml method executed is successful... "); 
 		} catch (Exception e) {
-			logger.error("OfficeUtil.officeToHtml method executed is error: ", e.getMessage()); 
+			logger.error("OfficeUtil.officeToHtml method executed is error: ", e); 
 		}
 		return result;
 	}
@@ -66,7 +66,7 @@ public class OfficeCmdUtil {
 			result = CmdToolUtil.executeCmdToResult(cmd, MONO_CMD_PATH, null);
 			logger.debug("OfficeUtil.wordToHtml method executed is successful... "); 
 		} catch (Exception e) {
-			logger.error("OfficeUtil.wordToHtml method executed is error: ", e.getMessage()); 
+			logger.error("OfficeUtil.wordToHtml method executed is error: ", e); 
 		}
 		return result;
 	}
@@ -107,7 +107,7 @@ public class OfficeCmdUtil {
 			result = CmdToolUtil.executeCmdToResult(cmd, null, null);
 			logger.debug("OfficeUtil.htmlToPdf method executed is successful... "); 
 		} catch (Exception e) {
-			logger.error("OfficeUtil.htmlToPdf method executed is error: ", e.getMessage()); 
+			logger.error("OfficeUtil.htmlToPdf method executed is error: ", e); 
 		}
 		return result;
 	}

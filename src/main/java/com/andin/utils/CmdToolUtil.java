@@ -50,7 +50,7 @@ public class CmdToolUtil {
 			logger.debug("CmdToolUtil.executeCmdToResult method executed result is: " + result); 
 			logger.debug("CmdToolUtil.executeCmdToResult method executed is successful... "); 
 		} catch (Exception e) {
-			logger.error("CmdToolUtil.executeCmdToResult method executed is error: ", e.getMessage()); 
+			logger.error("CmdToolUtil.executeCmdToResult method executed is error: ", e); 
 		}
 		return result;
 	}
@@ -106,7 +106,7 @@ public class CmdToolUtil {
 			logger.debug("CmdToolUtil.executeCmdToContent method executed result is: " + result); 
 			logger.debug("CmdToolUtil.executeCmdToContent method executed is successful... "); 
 		} catch (Exception e) {
-			logger.error("CmdToolUtil.executeCmdToContent method executed is error: ", e.getMessage()); 
+			logger.error("CmdToolUtil.executeCmdToContent method executed is error: ", e); 
 		}
 		return result;
 	}
