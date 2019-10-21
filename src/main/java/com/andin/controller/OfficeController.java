@@ -18,12 +18,15 @@ import javax.servlet.http.Part;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.andin.service.OfficeService;
 import com.andin.utils.ConstantUtil;
+import com.andin.utils.OfficeFileUtil;
 import com.andin.utils.StringUtil;
 
 @Controller
@@ -35,7 +38,7 @@ public class OfficeController {
 	@Resource
 	private OfficeService officeService;
 	
-	@RequestMapping("/upload")
+	@RequestMapping(value="/upload", method=RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> upload(HttpServletRequest req, @RequestParam("file") Part part){
 		logger.debug("TestController.getAppInfo method execute is start...");
@@ -77,7 +80,7 @@ public class OfficeController {
 	}
 	
 	
-	@RequestMapping("/download")
+	@RequestMapping(value="/download", method=RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Object> download(HttpServletRequest req, HttpServletResponse resp){
 		logger.debug("TestController.getAppInfo method execute is start...");
@@ -125,6 +128,29 @@ public class OfficeController {
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
 			logger.error("TestController.getAppInfo method execute is error: ", e.getMessage());
+		}
+		return map;
+	}
+	
+	@RequestMapping(value="/officeToPdf", method=RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> officeToPdf(@RequestParam("name") String name){
+		logger.debug("TestController.officeToPdf method execute is start...");
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			Boolean result = OfficeFileUtil.officeToPdf(name);
+			if(result) {
+				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
+				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);
+			}else {
+				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.OFFICE_FILE_CONVERSION_ERROR_CODE);
+				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.OFFICE_FILE_CONVERSION_ERROR_MSG);
+			}
+			logger.debug("TestController.officeToPdf method execute is successful...");
+		} catch (Exception e) {
+			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
+			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
+			logger.error("TestController.officeToPdf method execute is error: ", e.getMessage());
 		}
 		return map;
 	}

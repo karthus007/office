@@ -48,6 +48,10 @@ public class ConstantUtil {
 	
 	public static final String DOWNLOAD_FILE_TYPE_ERROR_MSG = "下载的文件类型不支持";
 	
+	public static final String OFFICE_FILE_CONVERSION_ERROR_CODE = "0004";
+	
+	public static final String OFFICE_FILE_CONVERSION_ERROR_MSG = "office文件转换失败";
+	
 	
 	/********************* 系统常量 *********************/
 	
@@ -61,6 +65,8 @@ public class ConstantUtil {
 	/********************* 上传文件路径常量 *********************/
 	
 	public static final String HTML = ".html";
+	
+	public static final String PDF = ".pdf";
 	
 	public static final String DOCX = ".docx";
 	

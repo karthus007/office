@@ -19,6 +19,16 @@
 	    </div>
 	  </div>
 	</div>
+	<div class="row" style="width: 600px; margin: 30px auto;">
+	  <div class="col-lg-1">
+	    <div class="input-group">
+	      <input type="text" id="conversion" class="form-control" style="width: 30vw"  placeholder="请输入需转换的文件名" >
+	      <span class="input-group-btn" style="margin-right: 30px">
+	        <button class="btn btn-default" type="button" onclick="conversion();"  style="width: 150px;">OFFICE转换PDF</button>
+	      </span>
+	    </div>
+	  </div>
+	</div>
 	<div class="row"  style="width: 600px; margin: 30px auto;">
 	  <div class="col-lg-1">
 	    <div class="input-group">
@@ -38,6 +48,9 @@
 <script>
 	function office(){
         var file = $("#office")[0].files[0];
+		if(file == null){
+			alert("请选择需上传的文件");
+		}
         var formData = new FormData();//初始化一个FormData对象
         formData.append("file", file, file.name);//将 部分文件 塞入FormData
         $.ajax({
@@ -55,6 +68,27 @@
             }
         });
     }
+	
+	function conversion(){
+		var name = $("#conversion").val();
+		if(name == "" || type == null){
+			alert("请填写需转换的文件名");
+		}
+		var data = {"name": name};
+		$.ajax({
+            url: "./office/officeToPdf",
+            type: "GET",
+            data: data,
+            contentType: "application/json",
+            success: function (res) {
+                if(res.resultCode == "0000"){
+                	 alert("文件转换成功");
+                }else{
+                	 alert("文件转换失败");
+                }
+            }
+        });
+	}
 	
 	function pdf(){
 		var name = $("#pdf").val();
