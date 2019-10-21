@@ -22,13 +22,17 @@
 	<div class="row"  style="width: 600px; margin: 30px auto;">
 	  <div class="col-lg-1">
 	    <div class="input-group">
-	      <input type="text" value="" class="form-control" style="width:30vw;display:inline" id="pdf" placeholder="请输入下载的文件名" >
+	      <span style="display: flex;">
+	      	<input type="text" value="" class="form-control" style="width:20vw;display:inline" id="pdf" placeholder="请输入下载的文件名" >
+	      	<input type="text" value="" class="form-control" style="width:10vw;display:inline" id="type" placeholder="请输入源文件类型" >
+	      </span>
 	      <span class="input-group-btn">
 	      	<button class="btn btn-default" type="button" onclick="pdf();" style="width: 150px;">下载PDF文件</button>
 	      </span>
 	    </div>
 	  </div>
 	</div>
+	<a id="download"></a>
 </body>
 <script src="js/jquery-2.1.4.min.js"></script>
 <script>
@@ -54,7 +58,11 @@
 	
 	function pdf(){
 		var name = $("#pdf").val();
-		var url = "./office/download?name=" + name;
+		var type = $("#type").val();
+		if(name == "" || type == null){
+			alert("请填写下载的文件名和源文件的类型");
+		}
+		var url = "./office/download?name=" + name + "&type=" + type;
 		location.href = encodeURI(encodeURI(url));
 	}
 </script>

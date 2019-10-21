@@ -15,6 +15,8 @@ public class ConstantUtil {
 	
 	public static final String CONTENT_TYPE = "content-type";
 	
+	public static final String UTF_8 = "utf-8";
+	
 	public static final String APPLICATION_JSON_UTF_8 = "application/json;charset=utf-8";
 	
 	public static final String APPLICATION_JSON = "application/json";
@@ -24,6 +26,8 @@ public class ConstantUtil {
 	public static final String APPLICATION_X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
 	
 	public static final String MULTIPART_FORM_DATA = "multipart/form-data";
+	
+	public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
 	
 
 	/********************* 响应状态码 *********************/
@@ -40,6 +44,10 @@ public class ConstantUtil {
 	
 	public static final String UPLOAD_FILE_TYPE_ERROR_MSG = "上传的文件类型不支持";
 	
+	public static final String DOWNLOAD_FILE_TYPE_ERROR_CODE = "0003";
+	
+	public static final String DOWNLOAD_FILE_TYPE_ERROR_MSG = "下载的文件类型不支持";
+	
 	
 	/********************* 系统常量 *********************/
 	
@@ -47,6 +55,8 @@ public class ConstantUtil {
 	
 	
 	/********************* 上传文件路径常量 *********************/
+	
+	public static final String HTML = ".html";
 	
 	public static final String DOCX = ".docx";
 	

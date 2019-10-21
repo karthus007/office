@@ -1,5 +1,8 @@
 package com.andin.controller;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,6 +12,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.slf4j.Logger;
@@ -75,12 +79,45 @@ public class OfficeController {
 	
 	@RequestMapping("/download")
 	@ResponseBody
-	public Map<String, Object> download(HttpServletRequest req){
+	public Map<String, Object> download(HttpServletRequest req, HttpServletResponse resp){
 		logger.debug("TestController.getAppInfo method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			String name = URLDecoder.decode(req.getParameter("name"), "UTF-8");
-			System.out.println(name);
+			String fileName = URLDecoder.decode(req.getParameter("name"), "UTF-8");
+			String type = "." + URLDecoder.decode(req.getParameter("type"), "UTF-8");
+			StringBuffer path = new StringBuffer();
+			path.append(StringUtil.getUploadFilePath());
+			if(type.equals(ConstantUtil.DOC) || type.equals(ConstantUtil.DOCX)) {
+				path.append(ConstantUtil.HTML_DOCX_PATH);
+			}else if(type.equals(ConstantUtil.XLS) || type.equals(ConstantUtil.XLSX)) {
+				path.append(ConstantUtil.HTML_XLSX_PATH);
+			}else if(type.equals(ConstantUtil.PPT) || type.equals(ConstantUtil.PPTX)) {
+				path.append(ConstantUtil.HTML_PPTX_PATH);
+			}else {
+				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DOWNLOAD_FILE_TYPE_ERROR_CODE);
+				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DOWNLOAD_FILE_TYPE_ERROR_MSG);
+				return map;
+			}
+			path.append(fileName);
+	        File file = new File(path.toString());
+	        
+	        //设置响应头
+	        resp.setContentLength((int) file.length());
+	        resp.setCharacterEncoding(ConstantUtil.UTF_8);
+	        resp.setContentType(ConstantUtil.APPLICATION_OCTET_STREAM);
+	        resp.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+	        
+	        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+	        OutputStream os = resp.getOutputStream();
+	        byte[] buff = new byte[1024*4];
+	        int len = 0;
+	        while ((len = bis.read(buff)) != -1) {
+	        	os.write(buff, 0, len);
+	        	os.flush();
+	        }
+	        bis.close();
+	        os.close();
+	        
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);
 			logger.debug("TestController.getAppInfo method execute is successful...");
