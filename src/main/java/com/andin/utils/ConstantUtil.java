@@ -53,6 +53,10 @@ public class ConstantUtil {
 	
 	public static final String CONFIG_PROPERTIES = "config";
 	
+	public static final String TRUE = "true";
+	
+	public static final String FALSE = "false";
+	
 	
 	/********************* 上传文件路径常量 *********************/
 	
