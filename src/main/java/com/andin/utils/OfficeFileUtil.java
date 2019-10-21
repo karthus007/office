@@ -37,7 +37,7 @@ public class OfficeFileUtil {
 	 */
 	public static boolean excelToHtml(String inputFileName) throws Exception {
 		boolean result = false;
-		String fileName = inputFileName.substring(0, inputFileName.lastIndexOf(".")-1);
+		String fileName = inputFileName.substring(0, inputFileName.lastIndexOf("."));
 		result = OfficeCmdUtil.excelToHtml(XLSX_PATH + inputFileName, HTML_XLSX_PATH + fileName + ConstantUtil.HTML);
 		logger.debug("输入文件为" + inputFileName + "xlsx转html的结果为：" + result);
 		return result;
@@ -61,7 +61,7 @@ public class OfficeFileUtil {
 		boolean result = false;
 		try {
 			logger.debug("OfficeFileUtil.officeToPdf 转换的文件名为： " + inputFileName);
-			int index = inputFileName.lastIndexOf(".")-1;
+			int index = inputFileName.lastIndexOf(".");
 			String fileName = inputFileName.substring(0, index);
 			String fileType = inputFileName.substring(index);
 			if(ConstantUtil.DOCX.equals(fileType) || ConstantUtil.DOC.equals(fileType)) {
@@ -125,7 +125,7 @@ public class OfficeFileUtil {
 			if(file.isFile()) {
 				String name = file.getName();
 				if(name.startsWith(fileName)) {
-					list.add(name.substring(0, name.lastIndexOf(".")-1));
+					list.add(name.substring(0, name.lastIndexOf(".")));
 				}	
 			}
 		}
