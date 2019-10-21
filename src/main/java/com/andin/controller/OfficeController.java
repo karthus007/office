@@ -107,8 +107,8 @@ public class OfficeController {
 	        resp.setContentLength((int) file.length());
 	        resp.setCharacterEncoding(ConstantUtil.UTF_8);
 	        resp.setContentType(ConstantUtil.APPLICATION_OCTET_STREAM);
-	        resp.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-	        
+	        //resp.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+	        resp.setHeader("Content-Disposition", "attachment;filename=" + new String( fileName.getBytes(ConstantUtil.UTF_8), "ISO-8859-1"));  
 	        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
 	        OutputStream os = resp.getOutputStream();
 	        byte[] buff = new byte[1024*4];

@@ -40,6 +40,7 @@ public class OfficeCmdUtil {
 			//创建cmd命令
 			String cmd = DOTNET_CMD + inputFileName + " " + outputFileName + " " + type;
 			logger.debug("officeToHtml cmd is : " + cmd); 
+			logger.debug("officeToHtml dir path is : " + DOTNET_CMD_PATH); 
 			result = CmdToolUtil.executeCmdToResult(cmd, DOTNET_CMD_PATH, null);
 			logger.debug("OfficeUtil.officeToHtml method executed is successful... "); 
 		} catch (Exception e) {
@@ -61,6 +62,7 @@ public class OfficeCmdUtil {
 			//创建cmd命令
 			String cmd = MONO_CMD + inputFileName + " " + outputDirPath;
 			logger.debug("wordToHtml cmd is : " + cmd); 
+			logger.debug("officeToHtml dir path is : " + MONO_CMD_PATH); 
 			result = CmdToolUtil.executeCmdToResult(cmd, MONO_CMD_PATH, null);
 			logger.debug("OfficeUtil.wordToHtml method executed is successful... "); 
 		} catch (Exception e) {
@@ -102,7 +104,7 @@ public class OfficeCmdUtil {
 			//创建cmd命令
 			String cmd = WKHTMLTOPDF_CMD + inputFileName + " " + outputFileName;
 			logger.debug("htmlToPdf cmd is : " + cmd); 
-			result = CmdToolUtil.executeCmdToResult(cmd, MONO_CMD_PATH, null);
+			result = CmdToolUtil.executeCmdToResult(cmd, null, null);
 			logger.debug("OfficeUtil.htmlToPdf method executed is successful... "); 
 		} catch (Exception e) {
 			logger.error("OfficeUtil.htmlToPdf method executed is error: ", e.getMessage()); 

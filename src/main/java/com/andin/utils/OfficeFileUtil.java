@@ -39,7 +39,7 @@ public class OfficeFileUtil {
 		boolean result = false;
 		String fileName = inputFileName.substring(0, inputFileName.lastIndexOf("."));
 		result = OfficeCmdUtil.excelToHtml(XLSX_PATH + inputFileName, HTML_XLSX_PATH + fileName + ConstantUtil.HTML);
-		logger.debug("输入文件为" + inputFileName + "xlsx转html的结果为：" + result);
+		logger.debug("输入文件为" + inputFileName + " xlsx转html的结果为：" + result);
 		return result;
 	}
 	
@@ -67,16 +67,16 @@ public class OfficeFileUtil {
 			if(ConstantUtil.DOCX.equals(fileType) || ConstantUtil.DOC.equals(fileType)) {
 				//将DOCX文件转换为PDF
 				result = OfficeCmdUtil.wordToHtml(DOCX_PATH + inputFileName, HTML_DOCX_PATH);
-				logger.debug("输入文件为" + inputFileName + "docx转html的结果为：" + result);
+				logger.debug("输入文件为" + inputFileName + " docx转html的结果为：" + result);
 				if(result) {
 					result = htmlToPdf(fileName, HTML_DOCX_PATH, PDF_DOCX_PATH);
-					logger.debug("输入文件为" + inputFileName + "html转pdf的结果为：" + result);
+					logger.debug("输入文件为" + inputFileName + " html转pdf的结果为：" + result);
 				}
 				
 			}else if(ConstantUtil.XLSX.equals(fileType) || ConstantUtil.XLS.equals(fileType)) {
 				//将XLSX文件转换为PDF
 				result = OfficeCmdUtil.excelToHtml(XLSX_PATH + inputFileName, HTML_XLSX_PATH + fileName + ConstantUtil.HTML);
-				logger.debug("输入文件为" + inputFileName + "xlsx转html的结果为：" + result);
+				logger.debug("输入文件为" + inputFileName + " xlsx转html的结果为：" + result);
 				if(result) {
 					//获取excel每个sheet转成的html文件名列表
 					List<String> list = getXlsxHtmlFileNameList(fileName);
@@ -86,16 +86,16 @@ public class OfficeFileUtil {
 						String name = list.get(i);
 						result = htmlToPdf(name, HTML_XLSX_PATH, PDF_XLSX_PATH);
 					}
-					logger.debug("输入文件为" + inputFileName + "html转pdf的结果为：" + result);
+					logger.debug("输入文件为" + inputFileName + " html转pdf的结果为：" + result);
 				}
 			
 			}else if(ConstantUtil.PPTX.equals(fileType) || ConstantUtil.PPT.equals(fileType)) {
 				//将PPTX文件转换为PDF
 				result = OfficeCmdUtil.pptToHtml(PPTX_PATH + inputFileName, HTML_PPTX_PATH  + fileName + ConstantUtil.HTML);
-				logger.debug("输入文件为" + inputFileName + "pptx转html的结果为：" + result);
+				logger.debug("输入文件为" + inputFileName + " pptx转html的结果为：" + result);
 				if(result) {
 					result = htmlToPdf(fileName, HTML_PPTX_PATH, PDF_PPTX_PATH);
-					logger.debug("输入文件为" + inputFileName + "html转pdf的结果为：" + result);
+					logger.debug("输入文件为" + inputFileName + " html转pdf的结果为：" + result);
 				}
 			}else {
 				logger.error("OfficeFileUtil.officeToPdf 需转换的文件格式不符合规范：" + inputFileName);
