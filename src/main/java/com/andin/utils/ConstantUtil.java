@@ -102,6 +102,10 @@ public class ConstantUtil {
 	
 	public static final String DOTNET_CMD_PATH = "cmd/officetohtml";
 	
+	public static final String WATER_FONT_PATH = "water/simhei.ttf";
+	
+	public static final String WATER_IMAGE_PATH = "water/test.jpg";
+	
 	
 	
 }
