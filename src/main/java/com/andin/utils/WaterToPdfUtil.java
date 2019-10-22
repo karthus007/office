@@ -20,6 +20,20 @@ import com.itextpdf.text.pdf.PdfWriter;
 public class WaterToPdfUtil {
 
     private static Logger logger = LoggerFactory.getLogger(WaterToPdfUtil.class);
+    
+    private static final String WATER_AGENT = PropertiesUtil.getProperties("water.agent", null);
+    
+    private static final String WATER_HANDLER = PropertiesUtil.getProperties("water.handler", null);
+    
+    private static final String WATER_ID = PropertiesUtil.getProperties("water.id", null);
+    
+    private static final String WATER_COM = PropertiesUtil.getProperties("water.com", null);
+    
+    private static final String WATER_PASS = PropertiesUtil.getProperties("water.pass", null);
+    
+    private static final String SIZE_TOP_TEXT = "合同编号:" + WATER_ID;
+    
+    private static final String SIZE_BOTTOM_TEXT = "承办人:" + WATER_AGENT + "  " + "部门负责人:" + WATER_HANDLER;
 	
 	public static final String WATER_FONT_PATH = StringUtil.getUploadFilePath() + ConstantUtil.WATER_FONT_PATH;
 	
@@ -37,19 +51,13 @@ public class WaterToPdfUtil {
     public static boolean pdfToWater(String inputFilePath, String outputFilePath){
     	boolean result = false;
     	try{
-            String handler = "gygy";
-            String approver = "huuu";
-            String documentid = "123999YHHHOO89";
-            String orign = "武汉华工安鼎股份有限公司";
-            String Openpasswd = "123";
-            
         	PdfReader pdfReader = new PdfReader(inputFilePath);
         	int numberOfPages = pdfReader.getNumberOfPages();
         	FileOutputStream outputStream = new FileOutputStream(outputFilePath, true);
         	PdfStamper pdfStamper = new PdfStamper(pdfReader, outputStream);
         	PdfContentByte waterMarkContent;
             BaseFont bf = BaseFont.createFont(WATER_FONT_PATH, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-            pdfStamper.setEncryption(Openpasswd.getBytes(), Openpasswd.getBytes(), PdfWriter.ALLOW_MODIFY_CONTENTS,false);
+            pdfStamper.setEncryption(WATER_PASS.getBytes(), WATER_PASS.getBytes(), PdfWriter.ALLOW_MODIFY_CONTENTS, false);
 
             PdfLayer layer = new PdfLayer(WATERMARK, pdfStamper.getWriter());
             for (int i = 1; i <= numberOfPages; i++){
@@ -59,7 +67,7 @@ public class WaterToPdfUtil {
                 PdfName pdfname = new PdfName(WATERMARK);
                 waterMarkContent.saveState();
                 waterMarkContent.beginMarkedContentSequence(pdfname);
-                int nLen = orign.length();
+                int nLen = WATER_COM.length();
                 float nFontsize = 0;
                 if(nLen <= 10){
                     nFontsize = 20;
@@ -81,9 +89,6 @@ public class WaterToPdfUtil {
                 waterMarkContent.setGState(gState);
                 waterMarkContent.setColorFill(BaseColor.BLUE);
                 waterMarkContent.beginText();
-                String szTopText = "合同编号:" + documentid;
-                String szBottomText = "承办人:" + handler + " " + "部门负责人:" + approver;
-                String szCompanyName = orign;
                 Image img = Image.getInstance(WATER_IMAGE_PATH);
                 float ftWidth, ftHeight;
                 if (rect.getWidth()> rect.getHeight()){
@@ -97,16 +102,16 @@ public class WaterToPdfUtil {
                 img.scaleAbsolute(400, 400);
                 img.setAbsolutePosition(ftWidth / 2 - 200, ftHeight / 2 - 200);
                 waterMarkContent.addImage(img);
-                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, szCompanyName, 10, 50, 52);
+                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 10, 50, 52);
                 // waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, szCompanyName, 100, 500, 0);
-                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, szCompanyName, ftWidth - 190, ftHeight - 260, 52);
-                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, szCompanyName, 10, ftHeight - 260, 52);
-                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, szCompanyName, ftWidth - 190, 50, 52);
+                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth - 190, ftHeight - 260, 52);
+                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 10, ftHeight - 260, 52);
+                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth - 190, 50, 52);
                 if (nFontsize-4>12){
                     nFontsize = 12;
                 }
-                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_RIGHT, szBottomText, rect.getWidth() - 30, 10, 0);
-                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_RIGHT, szTopText, rect.getWidth() - 30, rect.getHeight() - 20, 0);
+                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_RIGHT, SIZE_BOTTOM_TEXT, rect.getWidth() - 30, 10, 0);
+                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_RIGHT, SIZE_TOP_TEXT, rect.getWidth() - 30, rect.getHeight() - 20, 0);
            
                 waterMarkContent.endText();
                 waterMarkContent.endLayer();
@@ -121,4 +126,5 @@ public class WaterToPdfUtil {
         }
         return result;
     }
+    
 }
