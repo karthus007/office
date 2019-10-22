@@ -21,14 +21,15 @@ public class WaterToPdfUtil {
 
     private static Logger logger = LoggerFactory.getLogger(WaterToPdfUtil.class);
     
+    /* --- 承办人 ---- */
     private static final String WATER_AGENT = PropertiesUtil.getProperties("water.agent", null);
-    
+    /* --- 部门负责人 ---- */
     private static final String WATER_HANDLER = PropertiesUtil.getProperties("water.handler", null);
-    
+    /* --- 合同编号 ---- */
     private static final String WATER_ID = PropertiesUtil.getProperties("water.id", null);
-    
+    /* --- 公司名称 ---- */
     private static final String WATER_COM = PropertiesUtil.getProperties("water.com", null);
-    
+    /* --- PDF查看密码 ---- */
     private static final String WATER_PASS = PropertiesUtil.getProperties("water.pass", null);
     
     private static final String SIZE_TOP_TEXT = "合同编号:" + WATER_ID;
@@ -40,6 +41,8 @@ public class WaterToPdfUtil {
 	public static final String WATER_IMAGE_PATH = StringUtil.getUploadFilePath() + ConstantUtil.WATER_IMAGE_PATH;
 	
 	public static final String WATERMARK = "Watermark";
+	/* --- 生成的PDF是否为纵向，默认纵向 ---  */
+	public static final boolean IS_LEVEL_PDF = false;
 	
     /**
           * 对PDF文件添加水印
@@ -103,16 +106,26 @@ public class WaterToPdfUtil {
                 img.setAbsolutePosition(ftWidth / 2 - 200, ftHeight / 2 - 200);
                 waterMarkContent.addImage(img);
                 waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 10, 50, 52);
-                // waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, szCompanyName, 100, 500, 0);
                 waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth - 190, ftHeight - 260, 52);
                 waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 10, ftHeight - 260, 52);
                 waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth - 190, 50, 52);
                 if (nFontsize-4>12){
                     nFontsize = 12;
                 }
-                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_RIGHT, SIZE_BOTTOM_TEXT, rect.getWidth() - 30, 10, 0);
-                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_RIGHT, SIZE_TOP_TEXT, rect.getWidth() - 30, rect.getHeight() - 20, 0);
-           
+                //生成的PDF是否为纵向，默认为纵向
+                if (IS_LEVEL_PDF){
+                    if (rect.getWidth() > rect.getHeight()){
+                        waterMarkContent.showTextAligned(PdfContentByte.ALIGN_RIGHT, SIZE_BOTTOM_TEXT, rect.getHeight() - 30, 10, 0);
+                        waterMarkContent.showTextAligned(PdfContentByte.ALIGN_RIGHT, SIZE_TOP_TEXT, rect.getHeight() - 30, rect.getWidth() - 20, 0);
+                    }else{
+                        waterMarkContent.showTextAligned(PdfContentByte.ALIGN_RIGHT, SIZE_BOTTOM_TEXT, rect.getWidth() - 30, 10, 0);
+                        waterMarkContent.showTextAligned(PdfContentByte.ALIGN_RIGHT, SIZE_TOP_TEXT, rect.getWidth() - 30, rect.getHeight() - 20, 0);
+                    }
+                }else{
+                    waterMarkContent.showTextAligned(PdfContentByte.ALIGN_RIGHT, SIZE_BOTTOM_TEXT, rect.getWidth() - 30, 10, 0);
+                    waterMarkContent.showTextAligned(PdfContentByte.ALIGN_RIGHT, SIZE_TOP_TEXT, rect.getWidth() - 30, rect.getHeight() - 20, 0);
+                }
+
                 waterMarkContent.endText();
                 waterMarkContent.endLayer();
             }
