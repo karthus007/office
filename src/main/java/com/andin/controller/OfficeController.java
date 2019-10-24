@@ -78,6 +78,43 @@ public class OfficeController {
 		return map;
 	}
 	
+	@RequestMapping(value="/pdfToWater", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> pdfToWater(HttpServletRequest req, @RequestParam("file") Part part){
+		logger.debug("TestController.getAppInfo method execute is start...");
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			StringBuffer path = new StringBuffer();
+			path.append(StringUtil.getUploadFilePath());
+			String fileName = part.getSubmittedFileName();
+			if(fileName.endsWith(ConstantUtil.PDF)) {
+				path.append(ConstantUtil.PDF_PDF_PATH);
+			}else {
+				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.UPLOAD_FILE_TYPE_ERROR_CODE);
+				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.UPLOAD_FILE_TYPE_ERROR_MSG);
+				return map;
+			}
+			path.append(fileName);
+			InputStream in = part.getInputStream();
+			OutputStream os = new FileOutputStream(path.toString());
+			byte[] b = new byte[1024*4];
+			int len = 0;
+			while ((len = in.read(b)) != -1) {
+				os.write(b, 0, len);
+			}
+			in.close();
+			os.close();
+			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
+			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);
+			logger.debug("TestController.getAppInfo method execute is successful...");
+		} catch (Exception e) {
+			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
+			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
+			logger.error("TestController.getAppInfo method execute is error: ", e);
+		}
+		return map;
+	}
+	
 	
 	@RequestMapping(value="/download", method=RequestMethod.GET)
 	@ResponseBody
