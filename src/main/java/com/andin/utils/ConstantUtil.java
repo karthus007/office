@@ -98,6 +98,8 @@ public class ConstantUtil {
 	
 	public static final String PDF_PPTX_PATH = "pdf/pptx/";
 	
+	public static final String PDF_PDF_PATH = "pdf/pdf/";
+	
 	public static final String DOTNET_CMD_PATH = "cmd/officetohtml";
 	
 	public static final String MONO_CMD_PATH = "cmd/wordtohtml";
