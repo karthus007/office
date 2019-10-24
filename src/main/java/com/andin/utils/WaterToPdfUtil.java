@@ -43,6 +43,8 @@ public class WaterToPdfUtil {
 	public static final String WATERMARK = "Watermark";
 	/* --- 生成的PDF是否为纵向，默认纵向 ---  */
 	public static final boolean IS_LEVEL_PDF = false;
+	/* --- 水印的文件颜色 ---  */
+	public static final BaseColor WATER_COLOR = BaseColor.BLUE;
 	
     /**
           * 对PDF文件添加水印
@@ -90,7 +92,7 @@ public class WaterToPdfUtil {
                 PdfGState gState = new PdfGState();
                 gState.setFillOpacity(0.4f);
                 waterMarkContent.setGState(gState);
-                waterMarkContent.setColorFill(BaseColor.BLUE);
+                waterMarkContent.setColorFill(WATER_COLOR);
                 waterMarkContent.beginText();
                 Image img = Image.getInstance(WATER_IMAGE_PATH);
                 float ftWidth, ftHeight;
