@@ -1,7 +1,5 @@
 package com.andin.task;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -23,16 +21,13 @@ import com.andin.utils.StringUtil;
 public class OfficeToPdfTask {
 	
     private static Logger logger = LoggerFactory.getLogger(OfficeToPdfTask.class);
-    
-    /* --- PDF文件转换成功的状态 --- */
-    private static final Integer SUCCESS_STATUS = 5;
 
 	@Scheduled(cron = "*/5 * * * * ?")/** 每五秒触发一次 **/
 	public void getOfficeTaskListToPdf() {
 		logger.debug("OfficeToPdfTask.getOfficeTaskListToPdf method executed is start...");
 		//获取任务列表
-		List<TaskModel> list = HttpClientUtil.getTaskList();
-		for (TaskModel task : list) {
+		TaskModel task = HttpClientUtil.getTask();
+		if(task != null) {
 			logger.debug("OfficeToPdfTask.getOfficeTaskListToPdf method task params is: " + task.toString());
 			String taskId = task.getId();
 			String fileName = task.getFilename();
@@ -48,7 +43,7 @@ public class OfficeToPdfTask {
 					Boolean uploadResult = HttpClientUtil.uploadFile(filePath);
 					if(uploadResult) {
 						//更新任务的转换状态
-						Boolean updateResult = HttpClientUtil.updateTaskStatus(taskId, SUCCESS_STATUS);
+						Boolean updateResult = HttpClientUtil.updateTaskStatus(taskId);
 						if(updateResult) {
 							logger.debug("OfficeToPdfTask.getOfficeTaskListToPdf method executed task is successful..., taskId is: " + taskId);
 						}else {

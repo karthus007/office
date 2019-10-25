@@ -5,8 +5,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -21,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.andin.model.TaskModel;
 
@@ -148,11 +145,11 @@ public class HttpClientUtil {
 	}
 	
 	/**
-	 * 获取待转换的任务列表
+	 * 获取待转换的任务
 	 * @return
 	 */
-	public static List<TaskModel> getTaskList() {
-		List<TaskModel> list = new ArrayList<TaskModel>();
+	public static TaskModel getTask() {
+		TaskModel task = null;
 		CloseableHttpClient client = null;
 		CloseableHttpResponse response = null;
         try {
@@ -174,8 +171,7 @@ public class HttpClientUtil {
 				JSONObject json = JSON.parseObject(resp);
 				Integer ret = json.getIntValue(RET);
 				if(ret == RET_SUCCESS) {
-					JSONArray array = json.getJSONArray(CONT);
-					list = (List<TaskModel>)JSONArray.parseArray(array.toString(), TaskModel.class);
+					task = json.getObject(CONT, TaskModel.class);
 				}
 			}
 		} catch (Exception e) {
@@ -192,7 +188,7 @@ public class HttpClientUtil {
 			    logger.error("HttpClientUtil.getTaskList method close stream is failed: ", e);
 			}				
 		}
-        return list;
+        return task;
 	}
 	
 	/**
@@ -201,7 +197,7 @@ public class HttpClientUtil {
 	 * @param stat
 	 * @return
 	 */
-	public static boolean updateTaskStatus(String id, Integer stat) {
+	public static boolean updateTaskStatus(String id) {
 		boolean result = false;
 		CloseableHttpClient client = null;
 		CloseableHttpResponse response = null;
@@ -210,7 +206,7 @@ public class HttpClientUtil {
 			URI uri = new URIBuilder(OFFICE_HTTP_URI).build();
 			HttpPost post = new HttpPost(uri);
 			post.addHeader(ConstantUtil.CONTENT_TYPE, ConstantUtil.APPLICATION_JSON_UTF_8);
-			String params = "{\"mod\": \"ftranshandle\", \"ac\": \"uptaskstat\", \"id\": \"" + id + "\", \"stat\": " + stat + "}";
+			String params = "{\"mod\": \"ftranshandle\", \"ac\": \"uptaskstat\", \"id\": \"" + id + "\", \"stat\": 5}";
 			logger.debug("HttpClientUtil.updateTaskStatus method executed params is: " + params);
 	        HttpEntity reqEntity = new StringEntity(params);
 			post.setEntity(reqEntity);
@@ -245,6 +241,12 @@ public class HttpClientUtil {
 	}
 	
 	
-	
+	public static void main(String[] args) throws Exception {
+		System.out.println("===开始获取任务===");
+		//getTask();
+		//downloadFile("5d68c1a07eaa3cd57e8b4cb3", "5d68c1a07eaa3cad398b4e0b.doc");
+		//updateTaskStatus("5d68c1a07eaa3cd57e8b4cb3");
+		System.out.println("===结束获取任务===");
+	}
 	
 }
