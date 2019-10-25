@@ -20,6 +20,9 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.andin.model.TaskModel;
 
 /**
@@ -34,6 +37,12 @@ public class HttpClientUtil {
 	private static final String OFFICE_HTTP_URI = PropertiesUtil.getProperties("office.uri", null);
 	
 	private static final int HTTP_STATUS_OK = 200;
+	
+	private static final String CONT = "cont";
+	
+	private static final String RET = "ret";
+	
+	private static final int RET_SUCCESS = 1;
 
 	/**
 	 * 通过post下载文件
@@ -114,8 +123,12 @@ public class HttpClientUtil {
 			if(status == HTTP_STATUS_OK){
 				HttpEntity respEntity = response.getEntity();
 				String resp = EntityUtils.toString(respEntity);
-				logger.debug("HttpClientUtil.postUploadFile method executed response result is: " + resp);
-				result = true;
+				logger.debug("HttpClientUtil.postUploadFile method executed response result is: " + resp);					
+				JSONObject json = JSON.parseObject(resp);
+				Integer ret = json.getIntValue(RET);
+				if(ret == RET_SUCCESS) {
+					result = true;
+				}
 			}
 		} catch (Exception e) {
 		    logger.error("HttpClientUtil.postUploadFile method executed is failed: ", e);
@@ -139,7 +152,7 @@ public class HttpClientUtil {
 	 * @return
 	 */
 	public static List<TaskModel> getTaskList() {
-		List<TaskModel> list = null;
+		List<TaskModel> list = new ArrayList<TaskModel>();
 		CloseableHttpClient client = null;
 		CloseableHttpResponse response = null;
         try {
@@ -158,7 +171,12 @@ public class HttpClientUtil {
 				HttpEntity respEntity = response.getEntity();
 				String resp = EntityUtils.toString(respEntity);
 				logger.debug("HttpClientUtil.getTaskList method executed response result is: " + resp);
-				list = new ArrayList<TaskModel>();
+				JSONObject json = JSON.parseObject(resp);
+				Integer ret = json.getIntValue(RET);
+				if(ret == RET_SUCCESS) {
+					JSONArray array = json.getJSONArray(CONT);
+					list = (List<TaskModel>)JSONArray.parseArray(array.toString(), TaskModel.class);
+				}
 			}
 		} catch (Exception e) {
 		    logger.error("HttpClientUtil.getTaskList method executed is failed: ", e);
@@ -203,7 +221,11 @@ public class HttpClientUtil {
 				HttpEntity respEntity = response.getEntity();
 				String resp = EntityUtils.toString(respEntity);
 				logger.debug("HttpClientUtil.updateTaskStatus method executed response result is: " + resp);
-				result = true;
+				JSONObject json = JSON.parseObject(resp);
+				Integer ret = json.getIntValue(RET);
+				if(ret == RET_SUCCESS) {
+					result = true;
+				}
 			}
 		} catch (Exception e) {
 		    logger.error("HttpClientUtil.updateTaskStatus method executed is failed: ", e);

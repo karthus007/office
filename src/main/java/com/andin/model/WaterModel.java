@@ -21,15 +21,28 @@ public class WaterModel {
 	
 	/* --- 合同编号 --- */
 	private String id;
-	
-	public WaterModel() {}
 
-	public WaterModel(String handler, String head, String pass, String com, String id) {
-		this.handler = handler;
-		this.head = head;
-		this.pass = pass;
-		this.com = com;
-		this.id = id;
+	/* --- 文件名 --- */
+	private String fileName;
+	
+	/* --- 合同编号 --- */
+	private byte[] file;
+	
+	
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public byte[] getFile() {
+		return file;
+	}
+
+	public void setFile(byte[] file) {
+		this.file = file;
 	}
 
 	public String getHandler() {
@@ -85,6 +98,8 @@ public class WaterModel {
 		builder.append(com);
 		builder.append(", id=");
 		builder.append(id);
+		builder.append(", fileName=");
+		builder.append(fileName);
 		builder.append("]");
 		return builder.toString();
 	}

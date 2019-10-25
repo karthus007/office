@@ -18,6 +18,7 @@ import javax.servlet.http.Part;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,23 +43,13 @@ public class OfficeController {
 	
 	@RequestMapping(value="/pdfToWater", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> pdfToWater(HttpServletRequest req, @RequestParam("file") Part part){
+	public Map<String, Object> pdfToWater(@RequestBody WaterModel water){
 		logger.debug("TestController.pdfToWater method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			String handler = req.getParameter("handler");
-			String head = req.getParameter("head");
-			String pass = req.getParameter("pass");
-			String com = req.getParameter("com");
-			String id = req.getParameter("id");
-			if(StringUtil.isEmpty(id) || StringUtil.isEmpty(com) || StringUtil.isEmpty(handler) || StringUtil.isEmpty(head) || StringUtil.isEmpty(pass)) {
-				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.PARAM_NOT_EMPTY_ERROR_CODE);
-				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.PARAM_NOT_EMPTY_ERROR_MSG);
-				return map;
-			}
 			StringBuffer path = new StringBuffer();
 			path.append(StringUtil.getUploadFilePath());
-			String fileName = part.getSubmittedFileName();
+			String fileName = water.getFileName();
 			if(fileName.endsWith(ConstantUtil.PDF)) {
 				path.append(ConstantUtil.PDF_PDF_PATH);
 			}else {
@@ -67,23 +58,19 @@ public class OfficeController {
 				return map;
 			}
 			String inputFilePath = path.toString() + fileName;
-			InputStream in = part.getInputStream();
 			OutputStream os = new FileOutputStream(inputFilePath);
-			byte[] b = new byte[1024*4];
-			int len = 0;
-			while ((len = in.read(b)) != -1) {
-				os.write(b, 0, len);
-			}
-			in.close();
+			os.write(water.getFile());
 			os.close();
-			//创建水印信息模型
-			WaterModel water = new WaterModel(handler, head, pass, com, id);
 			//PDF水印文件的生成路径
 			String outputFilePath = path.toString() + ConstantUtil.WATER_PATH + fileName;
 			//生成水印文件
 			boolean result = WaterToPdfUtil.pdfToWater(inputFilePath, outputFilePath, water);
 			if(result) {
-				// TODO 返回文件流
+				InputStream in = new FileInputStream(outputFilePath);
+				byte[] buffer = new byte[in.available()];
+				in.read(buffer);
+				in.close();
+				map.put("file", buffer);
 				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);				
 			}else {
