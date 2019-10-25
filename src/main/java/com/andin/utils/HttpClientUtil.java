@@ -39,11 +39,10 @@ public class HttpClientUtil {
 	 * 通过post下载文件
 	 * @param mod
 	 * @param ac
-	 * @param id
-	 * @param filePath
+  	 * @param filePath
 	 * @return
 	 */
-	public static boolean downloadFile(String mod, String ac, String id, String filePath) {
+	public static boolean downloadFile(String id, String fileName) {
 		boolean result = false;
 		CloseableHttpClient client = null;
 		CloseableHttpResponse response = null;
@@ -53,7 +52,7 @@ public class HttpClientUtil {
 			URI uri = new URIBuilder(OFFICE_HTTP_URI).build();
 			HttpPost post = new HttpPost(uri);
 			post.addHeader(ConstantUtil.CONTENT_TYPE, ConstantUtil.APPLICATION_JSON_UTF_8);
-			String params = "{\"mod\": \"" + mod + "\", \"ac\": \"" + ac + "\", \"id\": \"" + id + "\"}";
+			String params = "{\"mod\": \"ftranshandle\", \"ac\": \"download\", \"id\": \"" + id + "\"}";
 			logger.debug("HttpClientUtil.getDownloadFile method executed params is: " + params);
 	        HttpEntity reqEntity = new StringEntity(params);
 			post.setEntity(reqEntity);
@@ -63,6 +62,7 @@ public class HttpClientUtil {
 			if(status == HTTP_STATUS_OK){
 				HttpEntity entity = response.getEntity();
 				InputStream in = entity.getContent();
+				String filePath = StringUtil.getFilePathByFileName(fileName);
 				os = new FileOutputStream(filePath);
 				byte[] b = new byte[1024*4];
 				int len = 0;
@@ -183,7 +183,7 @@ public class HttpClientUtil {
 	 * @param stat
 	 * @return
 	 */
-	public static boolean updateTaskStatus(String id, String stat) {
+	public static boolean updateTaskStatus(String id, Integer stat) {
 		boolean result = false;
 		CloseableHttpClient client = null;
 		CloseableHttpResponse response = null;
@@ -192,17 +192,17 @@ public class HttpClientUtil {
 			URI uri = new URIBuilder(OFFICE_HTTP_URI).build();
 			HttpPost post = new HttpPost(uri);
 			post.addHeader(ConstantUtil.CONTENT_TYPE, ConstantUtil.APPLICATION_JSON_UTF_8);
-			String params = "{\"mod\": \"ftranshandle\", \"ac\": \"uptaskstat\", \"id\": \"" + id + "\", \"stat\": \"" + stat + "\"}";
-			logger.debug("HttpClientUtil.getTaskList method executed params is: " + params);
+			String params = "{\"mod\": \"ftranshandle\", \"ac\": \"uptaskstat\", \"id\": \"" + id + "\", \"stat\": " + stat + "}";
+			logger.debug("HttpClientUtil.updateTaskStatus method executed params is: " + params);
 	        HttpEntity reqEntity = new StringEntity(params);
 			post.setEntity(reqEntity);
 			response = client.execute(post);
 			int status = response.getStatusLine().getStatusCode();
-			logger.debug("HttpClientUtil.getTaskList method executed response status is: " + status);
+			logger.debug("HttpClientUtil.updateTaskStatus method executed response status is: " + status);
 			if(status == 200){
 				HttpEntity respEntity = response.getEntity();
 				String resp = EntityUtils.toString(respEntity);
-				logger.debug("HttpClientUtil.getTaskList method executed response result is: " + resp);
+				logger.debug("HttpClientUtil.updateTaskStatus method executed response result is: " + resp);
 				result = true;
 			}
 		} catch (Exception e) {

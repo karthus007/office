@@ -23,10 +23,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.andin.model.WaterModel;
 import com.andin.service.OfficeService;
 import com.andin.utils.ConstantUtil;
 import com.andin.utils.OfficeFileUtil;
 import com.andin.utils.StringUtil;
+import com.andin.utils.WaterToPdfUtil;
 
 @Controller
 @RequestMapping("/office")
@@ -37,10 +39,70 @@ public class OfficeController {
 	@Resource
 	private OfficeService officeService;
 	
+	
+	@RequestMapping(value="/pdfToWater", method=RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> pdfToWater(HttpServletRequest req, @RequestParam("file") Part part){
+		logger.debug("TestController.pdfToWater method execute is start...");
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			String handler = req.getParameter("handler");
+			String head = req.getParameter("head");
+			String pass = req.getParameter("pass");
+			String com = req.getParameter("com");
+			String id = req.getParameter("id");
+			if(StringUtil.isEmpty(id) || StringUtil.isEmpty(com) || StringUtil.isEmpty(handler) || StringUtil.isEmpty(head) || StringUtil.isEmpty(pass)) {
+				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.PARAM_NOT_EMPTY_ERROR_CODE);
+				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.PARAM_NOT_EMPTY_ERROR_MSG);
+				return map;
+			}
+			StringBuffer path = new StringBuffer();
+			path.append(StringUtil.getUploadFilePath());
+			String fileName = part.getSubmittedFileName();
+			if(fileName.endsWith(ConstantUtil.PDF)) {
+				path.append(ConstantUtil.PDF_PDF_PATH);
+			}else {
+				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.UPLOAD_FILE_TYPE_ERROR_CODE);
+				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.UPLOAD_FILE_TYPE_ERROR_MSG);
+				return map;
+			}
+			String inputFilePath = path.toString() + fileName;
+			InputStream in = part.getInputStream();
+			OutputStream os = new FileOutputStream(inputFilePath);
+			byte[] b = new byte[1024*4];
+			int len = 0;
+			while ((len = in.read(b)) != -1) {
+				os.write(b, 0, len);
+			}
+			in.close();
+			os.close();
+			//创建水印信息模型
+			WaterModel water = new WaterModel(handler, head, pass, com, id);
+			//PDF水印文件的生成路径
+			String outputFilePath = path.toString() + ConstantUtil.WATER_PATH + fileName;
+			//生成水印文件
+			boolean result = WaterToPdfUtil.pdfToWater(inputFilePath, outputFilePath, water);
+			if(result) {
+				// TODO 返回文件流
+				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
+				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);				
+			}else {
+				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.PDF_TO_WATER_ERROR_CODE);
+				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.PDF_TO_WATER_ERROR_MSG);
+			}
+			logger.debug("TestController.pdfToWater method execute is successful...");
+		} catch (Exception e) {
+			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
+			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
+			logger.error("TestController.pdfToWater method execute is error: ", e);
+		}
+		return map;
+	}
+	
 	@RequestMapping(value="/upload", method=RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> upload(HttpServletRequest req, @RequestParam("file") Part part){
-		logger.debug("TestController.getAppInfo method execute is start...");
+		logger.debug("TestController.upload method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			StringBuffer path = new StringBuffer();
@@ -69,52 +131,14 @@ public class OfficeController {
 			os.close();
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);
-			logger.debug("TestController.getAppInfo method execute is successful...");
+			logger.debug("TestController.upload method execute is successful...");
 		} catch (Exception e) {
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
-			logger.error("TestController.getAppInfo method execute is error: ", e);
+			logger.error("TestController.upload method execute is error: ", e);
 		}
 		return map;
 	}
-	
-	@RequestMapping(value="/pdfToWater", method=RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> pdfToWater(HttpServletRequest req, @RequestParam("file") Part part){
-		logger.debug("TestController.getAppInfo method execute is start...");
-		Map<String, Object> map = new HashMap<String, Object>();
-		try {
-			StringBuffer path = new StringBuffer();
-			path.append(StringUtil.getUploadFilePath());
-			String fileName = part.getSubmittedFileName();
-			if(fileName.endsWith(ConstantUtil.PDF)) {
-				path.append(ConstantUtil.PDF_PDF_PATH);
-			}else {
-				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.UPLOAD_FILE_TYPE_ERROR_CODE);
-				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.UPLOAD_FILE_TYPE_ERROR_MSG);
-				return map;
-			}
-			path.append(fileName);
-			InputStream in = part.getInputStream();
-			OutputStream os = new FileOutputStream(path.toString());
-			byte[] b = new byte[1024*4];
-			int len = 0;
-			while ((len = in.read(b)) != -1) {
-				os.write(b, 0, len);
-			}
-			in.close();
-			os.close();
-			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
-			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);
-			logger.debug("TestController.getAppInfo method execute is successful...");
-		} catch (Exception e) {
-			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
-			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
-			logger.error("TestController.getAppInfo method execute is error: ", e);
-		}
-		return map;
-	}
-	
 	
 	@RequestMapping(value="/download", method=RequestMethod.GET)
 	@ResponseBody

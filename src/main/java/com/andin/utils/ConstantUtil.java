@@ -52,6 +52,14 @@ public class ConstantUtil {
 	
 	public static final String OFFICE_FILE_CONVERSION_ERROR_MSG = "office文件转换失败";
 	
+	public static final String PARAM_NOT_EMPTY_ERROR_CODE = "0005";
+	
+	public static final String PARAM_NOT_EMPTY_ERROR_MSG = "必填参数为空";
+	
+	public static final String PDF_TO_WATER_ERROR_CODE = "0006";
+	
+	public static final String PDF_TO_WATER_ERROR_MSG = "PDF文件添加水印失败";
+	
 	
 	/********************* 系统常量 *********************/
 	

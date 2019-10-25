@@ -53,5 +53,26 @@ public class StringUtil {
 		path.append(fileName);
 		return path.toString();
 	}
+	
+	/**
+	 * 通过文件名获取转换好后PDF的文件路径
+	 * @param fileName
+	 * @return
+	 */
+	public static String getPdfFilePathByFileName(String fileName) {
+		StringBuffer path = new StringBuffer();
+		path.append(getUploadFilePath());
+		if(fileName.endsWith(ConstantUtil.DOC) || fileName.endsWith(ConstantUtil.DOCX)) {
+			path.append(ConstantUtil.PDF_DOCX_PATH);
+		}else if(fileName.endsWith(ConstantUtil.XLS) || fileName.endsWith(ConstantUtil.XLSX)) {
+			path.append(ConstantUtil.PDF_XLSX_PATH);
+		}else if(fileName.endsWith(ConstantUtil.PPT) || fileName.endsWith(ConstantUtil.PPTX)) {
+			path.append(ConstantUtil.PDF_PPTX_PATH);
+		}else if(fileName.endsWith(ConstantUtil.PDF)) {
+			path.append(ConstantUtil.PDF_PDF_PATH);
+		}
+		path.append(fileName);
+		return path.toString();
+	}
 
 }

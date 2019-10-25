@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.andin.model.WaterModel;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;
@@ -20,21 +21,6 @@ import com.itextpdf.text.pdf.PdfWriter;
 public class WaterToPdfUtil {
 
     private static Logger logger = LoggerFactory.getLogger(WaterToPdfUtil.class);
-    
-    /* --- 承办人 ---- */
-    private static final String WATER_AGENT = PropertiesUtil.getProperties("water.agent", null);
-    /* --- 部门负责人 ---- */
-    private static final String WATER_HANDLER = PropertiesUtil.getProperties("water.handler", null);
-    /* --- 合同编号 ---- */
-    private static final String WATER_ID = PropertiesUtil.getProperties("water.id", null);
-    /* --- 公司名称 ---- */
-    private static final String WATER_COM = PropertiesUtil.getProperties("water.com", null);
-    /* --- PDF查看密码 ---- */
-    private static final String WATER_PASS = PropertiesUtil.getProperties("water.pass", null);
-    
-    private static final String SIZE_TOP_TEXT = "合同编号:" + WATER_ID;
-    
-    private static final String SIZE_BOTTOM_TEXT = "承办人:" + WATER_AGENT + "  " + "部门负责人:" + WATER_HANDLER;
 	
 	public static final String WATER_FONT_PATH = StringUtil.getUploadFilePath() + ConstantUtil.WATER_FONT_PATH;
 	
@@ -47,15 +33,19 @@ public class WaterToPdfUtil {
 	public static final BaseColor WATER_COLOR = BaseColor.BLUE;
 	
     /**
-          * 对PDF文件添加水印
-     * @param strSrcPath /app/file/1.pdf
-     * @param strDesPath /app/file/2.pdf
+          * 给PDF文件添加水印
+     * @param inputFilePath /app/file/1.pdf
+     * @param outputFilePath /app/file/2.pdf
+     * @param water 水印信息
      * @return
-     * @throws Exception
      */
-    public static boolean pdfToWater(String inputFilePath, String outputFilePath){
+    public static boolean pdfToWater(String inputFilePath, String outputFilePath, WaterModel water){
     	boolean result = false;
     	try{
+    	    String WATER_COM = water.getCom();
+    	    String WATER_PASS = water.getPass();
+    	    String SIZE_TOP_TEXT = "合同编号:" + water.getId();
+    	    String SIZE_BOTTOM_TEXT = "承办人:" + water.getHandler() + "  " + "部门负责人:" + water.getHead();
         	PdfReader pdfReader = new PdfReader(inputFilePath);
         	int numberOfPages = pdfReader.getNumberOfPages();
         	FileOutputStream outputStream = new FileOutputStream(outputFilePath, true);

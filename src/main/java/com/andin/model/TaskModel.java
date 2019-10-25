@@ -1,7 +1,7 @@
 package com.andin.model;
 
 public class TaskModel {
-	
+
 	/* --- 转换任务ID --- */
 	private String id;
 	
@@ -44,6 +44,21 @@ public class TaskModel {
 
 	public void setFiletype(Integer filetype) {
 		this.filetype = filetype;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("TaskModel [id=");
+		builder.append(id);
+		builder.append(", filename=");
+		builder.append(filename);
+		builder.append(", filesize=");
+		builder.append(filesize);
+		builder.append(", filetype=");
+		builder.append(filetype);
+		builder.append("]");
+		return builder.toString();
 	}
 
 }
