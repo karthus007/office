@@ -74,5 +74,32 @@ public class StringUtil {
 		path.append(fileName);
 		return path.toString();
 	}
+	
+	/**
+	 * 通过类型获取文件名的后缀
+	 * @param type
+	 * @return
+	 */
+	public static String getFileTypeByType(Integer type) {
+		String fileType = ".";
+		switch (type) {
+		case 82:
+			fileType += "ppt";
+			break;
+		case 83:
+			fileType += "doc";
+			break;
+		case 84:
+			fileType += "pdf";
+			break;
+		case 85:
+			fileType += "xls";
+			break;
+		default:
+			fileType += "pdf";
+			break;
+		}
+		return fileType;
+	}
 
 }

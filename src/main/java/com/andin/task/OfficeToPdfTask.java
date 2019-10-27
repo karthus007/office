@@ -30,7 +30,8 @@ public class OfficeToPdfTask {
 		if(task != null) {
 			logger.debug("OfficeToPdfTask.getOfficeTaskListToPdf method task params is: " + task.toString());
 			String taskId = task.getId();
-			String fileName = task.getFilename();
+			String fileType = StringUtil.getFileTypeByType(task.getFiletype());
+			String fileName = task.getFilename() + fileType;
 			//通过文件ID从PHP下载文件
 			Boolean downloadResult = HttpClientUtil.downloadFile(taskId, fileName);
 			//开始OFFICE转换PDF
