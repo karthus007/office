@@ -28,20 +28,6 @@ public class OfficeFileUtil {
 	private final static String PDF_XLSX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_XLSX_PATH;
 	
 	private final static String PDF_PPTX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_PPTX_PATH;
-
-	/**
-	 * XLSX转HTML
-	 * @param inputFileName /app/file/1.xlsx
-	 * @return
-	 * @throws Exception
-	 */
-	public static boolean excelToHtml(String inputFileName) throws Exception {
-		boolean result = false;
-		String fileName = inputFileName.substring(0, inputFileName.lastIndexOf("."));
-		result = OfficeCmdUtil.excelToHtml(XLSX_PATH + inputFileName, HTML_XLSX_PATH + fileName + ConstantUtil.HTML);
-		logger.debug("输入文件为" + inputFileName + " xlsx转html的结果为：" + result);
-		return result;
-	}
 	
 	/**
 	 * HTML转换PDF
@@ -51,7 +37,7 @@ public class OfficeFileUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static boolean htmlToPdf(String fileInfo, String inputPath, String outputPath) throws Exception {
+	private static boolean htmlToPdf(String fileInfo, String inputPath, String outputPath) throws Exception {
 		boolean result = false;
 		String htmlFileNamePath = inputPath + fileInfo + ConstantUtil.HTML;	
 		String pdfFileNamePath = outputPath + fileInfo + ConstantUtil.PDF;
