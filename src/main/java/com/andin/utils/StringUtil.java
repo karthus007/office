@@ -81,22 +81,22 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String getFileTypeByType(Integer type) {
-		String fileType = ".";
+		String fileType = "";
 		switch (type) {
 		case 82:
-			fileType += "ppt";
+			fileType = ConstantUtil.PPTX;
 			break;
 		case 83:
-			fileType += "doc";
+			fileType = ConstantUtil.DOCX;
 			break;
 		case 84:
-			fileType += "pdf";
+			fileType = ConstantUtil.PDF;
 			break;
 		case 85:
-			fileType += "xls";
+			fileType = ConstantUtil.XLSX;
 			break;
 		default:
-			fileType += "pdf";
+			fileType = ConstantUtil.PDF;
 			break;
 		}
 		return fileType;

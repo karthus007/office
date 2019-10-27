@@ -62,7 +62,7 @@ public class OfficeCmdUtil {
 			//创建cmd命令
 			String cmd = MONO_CMD + inputFileName + " " + outputDirPath;
 			logger.debug("wordToHtml cmd is : " + cmd); 
-			logger.debug("officeToHtml dir path is : " + MONO_CMD_PATH); 
+			logger.debug("wordToHtml dir path is : " + MONO_CMD_PATH); 
 			result = CmdToolUtil.executeCmdToResult(cmd, MONO_CMD_PATH, null);
 			logger.debug("OfficeUtil.wordToHtml method executed is successful... "); 
 		} catch (Exception e) {

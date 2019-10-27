@@ -43,7 +43,7 @@ public class OfficeFileUtil {
 		String htmlFileNamePath = inputPath + fileInfo + ConstantUtil.HTML;	
 		String pdfFileNamePath = outputPath + fileInfo + ConstantUtil.PDF;
 		result = OfficeCmdUtil.htmlToPdf(htmlFileNamePath, pdfFileNamePath);
-		logger.debug("输入文件为" + fileInfo + ".html, html转pdf的结果为：" + result);
+		logger.debug("输入文件为：" + fileInfo + ".html, html转pdf的结果为：" + result);
 		return result;
 	}
 	
@@ -57,18 +57,18 @@ public class OfficeFileUtil {
 			if(ConstantUtil.DOCX.equals(fileType) || ConstantUtil.DOC.equals(fileType)) {
 				//将DOCX文件转换为PDF
 				result = OfficeCmdUtil.wordToHtml(DOCX_PATH + inputFileName, HTML_DOCX_PATH);
-				logger.debug("输入文件为" + inputFileName + " docx转html的结果为：" + result);
+				logger.debug("输入文件为：" + inputFileName + ", docx转html的结果为：" + result);
 				FileUtils.forceDelete(new File(DOCX_PATH + inputFileName));
 				if(result) {
 					result = htmlToPdf(fileName, HTML_DOCX_PATH, PDF_DOCX_PATH);
-					logger.debug("输入文件为" + inputFileName + " html转pdf的结果为：" + result);
-					FileUtils.forceDelete(new File(HTML_DOCX_PATH + inputFileName));
+					logger.debug("输入文件为：" + inputFileName + ", html转pdf的结果为：" + result);
+					deleteHtmlFileByName(HTML_DOCX_PATH, fileName);
 				}
 				
 			}else if(ConstantUtil.XLSX.equals(fileType) || ConstantUtil.XLS.equals(fileType)) {
 				//将XLSX文件转换为PDF
 				result = OfficeCmdUtil.excelToHtml(XLSX_PATH + inputFileName, HTML_XLSX_PATH + fileName + ConstantUtil.HTML);
-				logger.debug("输入文件为" + inputFileName + " xlsx转html的结果为：" + result);
+				logger.debug("输入文件为：" + inputFileName + ", xlsx转html的结果为：" + result);
 				FileUtils.forceDelete(new File(XLSX_PATH + inputFileName));
 				if(result) {
 					//获取excel每个sheet转成的html文件名列表
@@ -79,19 +79,19 @@ public class OfficeFileUtil {
 						String name = list.get(i);
 						result = htmlToPdf(name, HTML_XLSX_PATH, PDF_XLSX_PATH);
 					}
-					logger.debug("输入文件为" + inputFileName + " html转pdf的结果为：" + result);
-					deleteXlsxFileByName(HTML_XLSX_PATH, fileName);
+					logger.debug("输入文件为：" + inputFileName + ", html转pdf的结果为：" + result);
+					deleteHtmlFileByName(HTML_XLSX_PATH, fileName);
 				}
 			
 			}else if(ConstantUtil.PPTX.equals(fileType) || ConstantUtil.PPT.equals(fileType)) {
 				//将PPTX文件转换为PDF
 				result = OfficeCmdUtil.pptToHtml(PPTX_PATH + inputFileName, HTML_PPTX_PATH  + fileName + ConstantUtil.HTML);
-				logger.debug("输入文件为" + inputFileName + " pptx转html的结果为：" + result);
+				logger.debug("输入文件为：" + inputFileName + ", pptx转html的结果为：" + result);
 				FileUtils.forceDelete(new File(PPTX_PATH + inputFileName));
 				if(result) {
 					result = htmlToPdf(fileName, HTML_PPTX_PATH, PDF_PPTX_PATH);
-					logger.debug("输入文件为" + inputFileName + " html转pdf的结果为：" + result);
-					FileUtils.forceDelete(new File(HTML_PPTX_PATH + inputFileName));
+					logger.debug("输入文件为：" + inputFileName + ", html转pdf的结果为：" + result);
+					FileUtils.forceDelete(new File(HTML_PPTX_PATH + fileName + ConstantUtil.HTML));
 				}
 			}else {
 				logger.error("OfficeFileUtil.officeToPdf 需转换的文件格式不符合规范：" + inputFileName);
@@ -136,8 +136,8 @@ public class OfficeFileUtil {
 	 * @param fileName
 	 * @return
 	 */
-	public static boolean deleteXlsxFileByName(String fileDirPath, String fileName) {
-		logger.debug("OfficeFileUtil.deleteXlsxFileByName method params is: [fileDirPath=" + fileDirPath + "], [fileName=" + fileName + "]");
+	public static boolean deleteHtmlFileByName(String fileDirPath, String fileName) {
+		logger.debug("OfficeFileUtil.deleteHtmlFileByName method params is: [fileDirPath=" + fileDirPath + "], [fileName=" + fileName + "]");
 		boolean result = false;
 		try {
 			File dir = new File(fileDirPath);
@@ -152,9 +152,9 @@ public class OfficeFileUtil {
 				}
 			}
 			result = true;
-			logger.debug("OfficeFileUtil.deleteXlsxFileByName method executed is successful...");
+			logger.debug("OfficeFileUtil.deleteHtmlFileByName method executed is successful...");
 		} catch (Exception e) {
-			logger.error("OfficeFileUtil.deleteXlsxFileByName method executed is error: ", e);
+			logger.error("OfficeFileUtil.deleteHtmlFileByName method executed is error: ", e);
 		}
 		return result;
 	}
