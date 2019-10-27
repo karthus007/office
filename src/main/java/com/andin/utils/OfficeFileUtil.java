@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,15 +58,18 @@ public class OfficeFileUtil {
 				//将DOCX文件转换为PDF
 				result = OfficeCmdUtil.wordToHtml(DOCX_PATH + inputFileName, HTML_DOCX_PATH);
 				logger.debug("输入文件为" + inputFileName + " docx转html的结果为：" + result);
+				FileUtils.forceDelete(new File(DOCX_PATH + inputFileName));
 				if(result) {
 					result = htmlToPdf(fileName, HTML_DOCX_PATH, PDF_DOCX_PATH);
 					logger.debug("输入文件为" + inputFileName + " html转pdf的结果为：" + result);
+					FileUtils.forceDelete(new File(HTML_DOCX_PATH + inputFileName));
 				}
 				
 			}else if(ConstantUtil.XLSX.equals(fileType) || ConstantUtil.XLS.equals(fileType)) {
 				//将XLSX文件转换为PDF
 				result = OfficeCmdUtil.excelToHtml(XLSX_PATH + inputFileName, HTML_XLSX_PATH + fileName + ConstantUtil.HTML);
 				logger.debug("输入文件为" + inputFileName + " xlsx转html的结果为：" + result);
+				FileUtils.forceDelete(new File(XLSX_PATH + inputFileName));
 				if(result) {
 					//获取excel每个sheet转成的html文件名列表
 					List<String> list = getXlsxHtmlFileNameList(fileName);
@@ -76,15 +80,18 @@ public class OfficeFileUtil {
 						result = htmlToPdf(name, HTML_XLSX_PATH, PDF_XLSX_PATH);
 					}
 					logger.debug("输入文件为" + inputFileName + " html转pdf的结果为：" + result);
+					deleteXlsxFileByName(HTML_XLSX_PATH, fileName);
 				}
 			
 			}else if(ConstantUtil.PPTX.equals(fileType) || ConstantUtil.PPT.equals(fileType)) {
 				//将PPTX文件转换为PDF
 				result = OfficeCmdUtil.pptToHtml(PPTX_PATH + inputFileName, HTML_PPTX_PATH  + fileName + ConstantUtil.HTML);
 				logger.debug("输入文件为" + inputFileName + " pptx转html的结果为：" + result);
+				FileUtils.forceDelete(new File(PPTX_PATH + inputFileName));
 				if(result) {
 					result = htmlToPdf(fileName, HTML_PPTX_PATH, PDF_PPTX_PATH);
 					logger.debug("输入文件为" + inputFileName + " html转pdf的结果为：" + result);
+					FileUtils.forceDelete(new File(HTML_PPTX_PATH + inputFileName));
 				}
 			}else {
 				logger.error("OfficeFileUtil.officeToPdf 需转换的文件格式不符合规范：" + inputFileName);
@@ -120,6 +127,36 @@ public class OfficeFileUtil {
 		}
 		logger.debug("OfficeFileUtil.getXlsxHtmlFileNameList 匹配到的文件名列表为：" + list.toString());
 		return list;
+	}
+	
+	
+	/**
+	  * 通过文件夹路径和匹配到的文件名删除文件
+	 * @param fileDirPath
+	 * @param fileName
+	 * @return
+	 */
+	public static boolean deleteXlsxFileByName(String fileDirPath, String fileName) {
+		logger.debug("OfficeFileUtil.deleteXlsxFileByName method params is: [fileDirPath=" + fileDirPath + "], [fileName=" + fileName + "]");
+		boolean result = false;
+		try {
+			File dir = new File(fileDirPath);
+			File[] files = dir.listFiles();
+			if(files != null) {
+				for (File file : files) {
+					String name = file.getName();
+					if(name.startsWith(fileName)) {
+						FileUtils.forceDelete(file);
+						logger.debug("file delete is successfuled, file name is: " + name);
+					}
+				}
+			}
+			result = true;
+			logger.debug("OfficeFileUtil.deleteXlsxFileByName method executed is successful...");
+		} catch (Exception e) {
+			logger.error("OfficeFileUtil.deleteXlsxFileByName method executed is error: ", e);
+		}
+		return result;
 	}
 	
 }
