@@ -58,7 +58,10 @@ public class OfficeFileUtil {
 				//将DOCX文件转换为PDF
 				result = OfficeCmdUtil.wordToHtml(DOCX_PATH + inputFileName, HTML_DOCX_PATH);
 				logger.debug("输入文件为：" + inputFileName + ", docx转html的结果为：" + result);
-				FileUtils.forceDelete(new File(DOCX_PATH + inputFileName));
+				if(ConstantUtil.DOC.equals(fileType)) {					
+					FileUtils.forceDelete(new File(DOCX_PATH + fileName + ConstantUtil.DOC));
+				}
+				FileUtils.forceDelete(new File(DOCX_PATH + fileName + ConstantUtil.DOCX));
 				if(result) {
 					result = htmlToPdf(fileName, HTML_DOCX_PATH, PDF_DOCX_PATH);
 					logger.debug("输入文件为：" + inputFileName + ", html转pdf的结果为：" + result);

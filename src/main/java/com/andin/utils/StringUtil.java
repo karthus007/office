@@ -84,16 +84,16 @@ public class StringUtil {
 		String fileType = "";
 		switch (type) {
 		case 82:
-			fileType = ConstantUtil.PPTX;
+			fileType = ConstantUtil.PPT;
 			break;
 		case 83:
-			fileType = ConstantUtil.DOCX;
+			fileType = ConstantUtil.DOC;
 			break;
 		case 84:
 			fileType = ConstantUtil.PDF;
 			break;
 		case 85:
-			fileType = ConstantUtil.XLSX;
+			fileType = ConstantUtil.XLS;
 			break;
 		default:
 			fileType = ConstantUtil.PDF;
