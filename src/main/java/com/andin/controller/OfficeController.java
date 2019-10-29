@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,9 +42,9 @@ public class OfficeController {
 	private OfficeService officeService;
 	
 	
-	@RequestMapping(value="/office/pdfToWater", method=RequestMethod.POST)
+	@RequestMapping(value="/pdfToWater", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> pdfToWater(@RequestPart("file") Part part, HttpServletRequest req){
+	public Map<String, Object> pdfToWater(@RequestPart("file") Part part, HttpServletRequest req, HttpServletResponse resp){
 		logger.debug("TestController.pdfToWater method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
@@ -83,6 +84,11 @@ public class OfficeController {
 			//生成水印文件
 			boolean result = WaterToPdfUtil.pdfToWater(inputFilePath, outputFilePath, water);
 			if(result) {
+		        InputStream bis = new FileInputStream(outputFilePath);
+		        byte[] buff = new byte[bis.available()];
+		        bis.read(buff);
+		        bis.close();
+		        map.put("file", Base64.getEncoder().encodeToString(buff));
 				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);				
 			}else {
