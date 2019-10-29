@@ -1,5 +1,6 @@
 package com.andin.utils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -7,6 +8,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.util.Base64;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -132,6 +134,7 @@ public class HttpClientUtil {
 					result = true;
 				}
 			}
+			FileUtils.forceDelete(new File(filePath));
 		} catch (Exception e) {
 		    logger.error("HttpClientUtil.uploadFile method executed is failed: ", e);
 		} finally {
