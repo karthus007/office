@@ -1,17 +1,17 @@
 package com.andin.utils;
 
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Base64;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -101,26 +101,31 @@ public class HttpClientUtil {
 	 * @param filePath
 	 * @return
 	 */
-	public static boolean uploadFile(String filePath) {
+	public static boolean uploadFile(String id, String filePath) {
 		boolean result = false;
 		CloseableHttpClient client = null;
 		CloseableHttpResponse response = null;
         try {
+        	InputStream bis = new FileInputStream(filePath);
+        	byte[] buff = new byte[bis.available()];
+        	bis.read(buff);
+        	bis.close();
+        	String base64File = Base64.getEncoder().encodeToString(buff);
         	client = HttpClients.createDefault();
 			URI uri = new URIBuilder(OFFICE_HTTP_URI).build();
 			HttpPost post = new HttpPost(uri);
-			File file = new File(filePath);
-	        MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
-	        multipartEntityBuilder.addBinaryBody("file", file);
-	        HttpEntity reqEntity= multipartEntityBuilder.build();
+			post.addHeader(ConstantUtil.CONTENT_TYPE, ConstantUtil.APPLICATION_JSON_UTF_8);
+			String params = "{\"mod\": \"ftranshandle\", \"ac\": \"upload\", \"id\": \"" + id + "\", \"file\": \"" + base64File + "\"}";
+			logger.debug("HttpClientUtil.uploadFile method executed params id is: " + id);
+	        HttpEntity reqEntity = new StringEntity(params);
 			post.setEntity(reqEntity);
 			response = client.execute(post);
 			int status = response.getStatusLine().getStatusCode();
-			logger.debug("HttpClientUtil.postUploadFile method executed response status is: " + status);
+			logger.debug("HttpClientUtil.uploadFile method executed response status is: " + status);
 			if(status == HTTP_STATUS_OK){
 				HttpEntity respEntity = response.getEntity();
 				String resp = EntityUtils.toString(respEntity);
-				logger.debug("HttpClientUtil.postUploadFile method executed response result is: " + resp);					
+				logger.debug("HttpClientUtil.uploadFile method executed response result is: " + resp);					
 				JSONObject json = JSON.parseObject(resp);
 				Integer ret = json.getIntValue(RET);
 				if(ret == RET_SUCCESS) {
@@ -128,7 +133,7 @@ public class HttpClientUtil {
 				}
 			}
 		} catch (Exception e) {
-		    logger.error("HttpClientUtil.postUploadFile method executed is failed: ", e);
+		    logger.error("HttpClientUtil.uploadFile method executed is failed: ", e);
 		} finally {
 			try {
 				if(client != null) {
@@ -138,7 +143,7 @@ public class HttpClientUtil {
 				    response.close();
 				}
 			} catch (Exception e) {
-			    logger.error("HttpClientUtil.postUploadFile method close stream is failed: ", e);
+			    logger.error("HttpClientUtil.uploadFile method close stream is failed: ", e);
 			}				
 		}
         return result;

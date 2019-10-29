@@ -39,7 +39,7 @@ public class OfficeToPdfTask {
 			//通过文件名获取转换好的PDF文件的路径
 			String filePath = StringUtil.getPdfFilePathByFileName(fileName);
 			//上传文件到PHP
-			Boolean uploadResult = HttpClientUtil.uploadFile(filePath);
+			Boolean uploadResult = HttpClientUtil.uploadFile(taskId, filePath);
 			//更新任务的转换状态
 			Boolean updateResult = HttpClientUtil.updateTaskStatus(taskId);
 			String result = "[downloadResult=" + downloadResult + "], [officeToPdfResult=" + officeToPdfResult + "], [uploadResult=" + uploadResult + "], [updateResult=" + updateResult + "]";
