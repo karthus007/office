@@ -59,7 +59,7 @@ public class StringUtil {
 	 * @param fileName
 	 * @return
 	 */
-	public static String getPdfFilePathByFileName(String fileName) {
+	public static String getPdfFilePathByFileName(String fileName, String name) {
 		StringBuffer path = new StringBuffer();
 		path.append(getUploadFilePath());
 		if(fileName.endsWith(ConstantUtil.DOC) || fileName.endsWith(ConstantUtil.DOCX)) {
@@ -71,7 +71,8 @@ public class StringUtil {
 		}else if(fileName.endsWith(ConstantUtil.PDF)) {
 			path.append(ConstantUtil.PDF_PDF_PATH);
 		}
-		path.append(fileName);
+		path.append(name);
+		path.append(ConstantUtil.PDF);
 		return path.toString();
 	}
 	
