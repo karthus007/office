@@ -45,7 +45,7 @@ public class OfficeController {
 	
 	@RequestMapping(value="/pdfToWater", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> pdfToWater(@RequestPart("file") Part part, HttpServletRequest req, HttpServletResponse resp){
+	public Map<String, Object> pdfToWater(@RequestPart("file") Part part, HttpServletRequest req){
 		logger.debug("TestController.pdfToWater method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
