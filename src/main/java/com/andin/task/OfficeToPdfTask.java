@@ -28,21 +28,31 @@ public class OfficeToPdfTask {
 		//获取任务列表
 		TaskModel task = HttpClientUtil.getTask();
 		if(task != null) {
+			Boolean downloadResult = false;
+			Boolean officeToPdfResult = false;
+			Boolean uploadResult = false;
+			Boolean updateResult = false;
 			logger.debug("OfficeToPdfTask.getOfficeTaskListToPdf method task params is: " + task.toString());
 			String taskId = task.getId();
 			String name = task.getFilename();
 			String fileType = StringUtil.getFileTypeByType(task.getFiletype());
 			String fileName = name + fileType;
 			//通过文件ID从PHP下载文件
-			Boolean downloadResult = HttpClientUtil.downloadFile(taskId, fileName);
-			//开始OFFICE转换PDF
-			Boolean officeToPdfResult = OfficeFileUtil.officeToPdf(fileName);
-			//通过文件名获取转换好的PDF文件的路径
-			String filePath = StringUtil.getPdfFilePathByFileName(fileName, name);
-			//上传文件到PHP
-			Boolean uploadResult = HttpClientUtil.uploadFile(taskId, filePath);
-			//更新任务的转换状态
-			Boolean updateResult = HttpClientUtil.updateTaskStatus(taskId);
+			downloadResult = HttpClientUtil.downloadFile(taskId, fileName);
+			if(downloadResult) {
+				//开始OFFICE转换PDF
+				officeToPdfResult = OfficeFileUtil.officeToPdf(fileName);
+				if(officeToPdfResult) {
+					//通过文件名获取转换好的PDF文件的路径
+					String filePath = StringUtil.getPdfFilePathByFileName(fileName, name);
+					//上传文件到PHP
+					uploadResult = HttpClientUtil.uploadFile(taskId, filePath);
+					if(uploadResult) {
+						//更新任务的转换状态						
+						updateResult = HttpClientUtil.updateTaskStatus(taskId);
+					}
+				}
+			}
 			String result = "[downloadResult=" + downloadResult + "], [officeToPdfResult=" + officeToPdfResult + "], [uploadResult=" + uploadResult + "], [updateResult=" + updateResult + "]";
 			logger.debug("OfficeToPdfTask.getOfficeTaskListToPdf method executed task result is: " + result);
 		}
