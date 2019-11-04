@@ -29,6 +29,17 @@ public class ConstantUtil {
 	
 	public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
 	
+	/********************* 请求响应头常量 *********************/
+	
+	public static final String HTTP_AC = "AC";
+	
+	public static final String UPLOAD = "upload";
+	
+	public static final String HTTP_ID = "ID";
+	
+	public static final String HTTP_MOD = "MOD";
+	
+	public static final String HTTP_MOD_VALUE = "ftranshandle";
 
 	/********************* 响应状态码 *********************/
 	

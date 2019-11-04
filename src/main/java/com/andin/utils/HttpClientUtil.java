@@ -6,13 +6,13 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.Base64;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -113,17 +113,18 @@ public class HttpClientUtil {
         		filePath = filePath.substring(0, index) + "-1" + filePath.substring(index);
         	}
         	InputStream bis = new FileInputStream(filePath);
-        	byte[] buff = new byte[bis.available()];
-        	bis.read(buff);
+        	byte[] arr = new byte[bis.available()];
+        	bis.read(arr);
         	bis.close();
-        	String base64File = Base64.getEncoder().encodeToString(buff);
         	client = HttpClients.createDefault();
 			URI uri = new URIBuilder(OFFICE_HTTP_URI).build();
 			HttpPost post = new HttpPost(uri);
-			post.addHeader(ConstantUtil.CONTENT_TYPE, ConstantUtil.APPLICATION_JSON_UTF_8);
-			String params = "{\"mod\": \"ftranshandle\", \"ac\": \"upload\", \"id\": \"" + id + "\", \"file\": \"" + base64File + "\"}";
+			post.addHeader(ConstantUtil.CONTENT_TYPE, ConstantUtil.APPLICATION_OCTET_STREAM);
+			post.addHeader(ConstantUtil.HTTP_MOD, ConstantUtil.HTTP_MOD_VALUE);
+			post.addHeader(ConstantUtil.HTTP_AC, ConstantUtil.UPLOAD);
+			post.addHeader(ConstantUtil.HTTP_ID, id);
 			logger.debug("HttpClientUtil.uploadFile method executed params id is: " + id);
-	        HttpEntity reqEntity = new StringEntity(params);
+	        HttpEntity reqEntity = new ByteArrayEntity(arr);
 			post.setEntity(reqEntity);
 			response = client.execute(post);
 			int status = response.getStatusLine().getStatusCode();
@@ -258,6 +259,7 @@ public class HttpClientUtil {
 		//getTask();
 		//downloadFile("5d68c1a07eaa3cd57e8b4cb3", "5d68c1a07eaa3cad398b4e0b.doc");
 		//updateTaskStatus("5d68c1a07eaa3cd57e8b4cb3");
+		//uploadFile("5d68c0367eaa3cd16d8b4a63", "d:/app/ccc.txt");
 		System.out.println("===结束获取任务===");
 	}
 	

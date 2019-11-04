@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,8 +43,7 @@ public class OfficeController {
 	
 	
 	@RequestMapping(value="/pdfToWater", method=RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> pdfToWater(@RequestPart("file") Part part, HttpServletRequest req){
+	public void pdfToWater(@RequestPart("file") Part part, HttpServletRequest req, HttpServletResponse resp){
 		logger.debug("TestController.pdfToWater method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
@@ -54,57 +52,62 @@ public class OfficeController {
 			String pass = req.getParameter("pass");
 			String head = req.getParameter("head");
 			String handler = req.getParameter("handler");
-			if(StringUtil.isEmpty(id) || StringUtil.isEmpty(com) || StringUtil.isEmpty(pass) || StringUtil.isEmpty(head) || StringUtil.isEmpty(handler)) {
-				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.PARAM_NOT_EMPTY_ERROR_CODE);
-				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.PARAM_NOT_EMPTY_ERROR_MSG);
-				return map;
-			}
 			WaterModel water = new WaterModel(handler, head, pass, com, id);
 			StringBuffer path = new StringBuffer();
 			path.append(StringUtil.getUploadFilePath());
 			String fileName = part.getSubmittedFileName();
 			if(fileName.endsWith(ConstantUtil.PDF)) {
 				path.append(ConstantUtil.PDF_PDF_PATH);
+				String inputFilePath = path.toString() + fileName;
+				InputStream in = part.getInputStream();
+				byte[] b = new byte[1024*4];
+				int len = 0;
+				OutputStream os = new FileOutputStream(inputFilePath);
+				while ((len = in.read(b)) != -1) {
+					os.write(b, 0, len);				
+				}
+				in.close();
+				os.close();
+				//PDF水印文件的生成路径
+				String outputFilePath = path.toString() + ConstantUtil.WATER_PATH + fileName;
+				//生成水印文件
+				boolean result = WaterToPdfUtil.pdfToWater(inputFilePath, outputFilePath, water);
+				if(result) {
+					InputStream bis = new FileInputStream(outputFilePath);
+					
+					resp.addHeader(ConstantUtil.CONTENT_TYPE, ConstantUtil.APPLICATION_OCTET_STREAM);
+					resp.setCharacterEncoding(ConstantUtil.UTF_8);
+					resp.setContentLength(bis.available());
+					OutputStream out = resp.getOutputStream();
+			        
+					byte[] buff = new byte[1024*1024];
+			        int olen = 0;
+			        while((len = bis.read(buff)) != -1) {
+			        	out.write(buff, 0, olen);
+			        	out.flush();
+			        }
+			        bis.close();
+			        out.close();
+			        
+					map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
+					map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);				
+				}else {
+					map.put(ConstantUtil.RESULT_CODE, ConstantUtil.PDF_TO_WATER_ERROR_CODE);
+					map.put(ConstantUtil.RESULT_MSG, ConstantUtil.PDF_TO_WATER_ERROR_MSG);
+				}
+				FileUtils.forceDelete(new File(inputFilePath));
+				FileUtils.forceDelete(new File(outputFilePath));
+				logger.debug("TestController.pdfToWater method execute is successful...");
 			}else {
 				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.UPLOAD_FILE_TYPE_ERROR_CODE);
 				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.UPLOAD_FILE_TYPE_ERROR_MSG);
-				return map;
-			}
-			String inputFilePath = path.toString() + fileName;
-			InputStream in = part.getInputStream();
-			byte[] b = new byte[1024*4];
-			int len = 0;
-			OutputStream os = new FileOutputStream(inputFilePath);
-			while ((len = in.read(b)) != -1) {
-				os.write(b, 0, len);				
-			}
-			in.close();
-			os.close();
-			//PDF水印文件的生成路径
-			String outputFilePath = path.toString() + ConstantUtil.WATER_PATH + fileName;
-			//生成水印文件
-			boolean result = WaterToPdfUtil.pdfToWater(inputFilePath, outputFilePath, water);
-			if(result) {
-		        InputStream bis = new FileInputStream(outputFilePath);
-		        byte[] buff = new byte[bis.available()];
-		        bis.read(buff);
-		        bis.close();
-		        map.put("file", Base64.getEncoder().encodeToString(buff));
-				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
-				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);				
-			}else {
-				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.PDF_TO_WATER_ERROR_CODE);
-				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.PDF_TO_WATER_ERROR_MSG);
-			}
-			FileUtils.forceDelete(new File(inputFilePath));
-			FileUtils.forceDelete(new File(outputFilePath));
-			logger.debug("TestController.pdfToWater method execute is successful...");
+			}			
 		} catch (Exception e) {
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
 			logger.error("TestController.pdfToWater method execute is error: ", e);
 		}
-		return map;
+		logger.debug("TestController.pdfToWater response is: [resultCode=" + map.get(ConstantUtil.RESULT_CODE) + "],[resultMsg=" + map.get(ConstantUtil.RESULT_MSG) + "]");
 	}
 	
 	@RequestMapping(value="/upload", method=RequestMethod.POST)
