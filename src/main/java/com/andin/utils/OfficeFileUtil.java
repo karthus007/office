@@ -10,9 +10,9 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aspose.cells.Workbook;
+import com.aspose.slides.Presentation;
 import com.aspose.words.Document;
-import com.aspose.words.License;
-import com.aspose.words.SaveFormat;
 
 public class OfficeFileUtil {
 
@@ -28,31 +28,83 @@ public class OfficeFileUtil {
 	
 	private final static String HTML_XLSX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.HTML_XLSX_PATH;
 	
-	private final static String HTML_PPTX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.HTML_PPTX_PATH;
+	//private final static String HTML_PPTX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.HTML_PPTX_PATH;
 	
 	private final static String PDF_DOCX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_DOCX_PATH;
 	
 	private final static String PDF_XLSX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_XLSX_PATH;
 	
 	private final static String PDF_PPTX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_PPTX_PATH;
-	
+
 	/**
 	 * word转pdf
 	 * @param inputFileName
 	 * @param outputFileName
 	 * @throws Exception
 	 */
-	private static boolean asposeWordToPdf(String inputFileName, String outputFileName) throws Exception {
+	private static boolean asposeWordToPdf(String inputFileName, String outputFileName){
 		boolean result = false;
-		byte[] bytes = ConstantUtil.ASPOSE_WORD_LICENSE.getBytes("UTF-8");
-		InputStream in =  new ByteArrayInputStream(bytes);
-        License asposeLic = new License();
-        asposeLic.setLicense(in);
-    	Document convertDoc = new Document(inputFileName);
-		convertDoc.save(outputFileName, SaveFormat.PDF);
-		in.close();
-        result = true;
-		logger.debug("OfficeFileUtil.asposeWordToPdf 转换成功， 输出文件路径为： " + outputFileName);
+		try {
+			byte[] bytes = ConstantUtil.ASPOSE_WORD_LICENSE.getBytes("UTF-8");
+			InputStream in =  new ByteArrayInputStream(bytes);
+			com.aspose.words.License asposeLic = new com.aspose.words.License();
+			asposeLic.setLicense(in);
+			Document convertDoc = new Document(inputFileName);
+			convertDoc.save(outputFileName, com.aspose.words.SaveFormat.PDF);
+			in.close();
+			result = true;
+			logger.debug("OfficeFileUtil.asposeWordToPdf method executed is successful, output file path is: " + outputFileName);
+		}  catch (Exception e) {
+			logger.error("OfficeFileUtil.asposeWordToPdf method executed is error: ", e);
+		}
+        return result;
+	}
+	
+	/**
+	 * excel转pdf
+	 * @param inputFileName
+	 * @param outputFileName
+	 * @throws Exception
+	 */
+	private static boolean asposeExcelToPdf(String inputFileName, String outputFileName){
+		boolean result = false;
+		try {
+			byte[] bytes = ConstantUtil.ASPOSE_WORD_LICENSE.getBytes("UTF-8");
+			InputStream in =  new ByteArrayInputStream(bytes);
+			com.aspose.cells.License asposeLic = new com.aspose.cells.License();
+			asposeLic.setLicense(in);
+       	 	Workbook book = new Workbook(inputFileName);
+       	 	book.save(outputFileName, com.aspose.cells.SaveFormat.PDF);
+			in.close();
+			result = true;
+			logger.debug("OfficeFileUtil.asposeExcelToPdf method executed is successful, output file path is: " + outputFileName);
+		}  catch (Exception e) {
+			logger.error("OfficeFileUtil.asposeExcelToPdf method executed is error: ", e);
+		}
+        return result;
+	}
+	
+	/**
+	 * pptx转pdf
+	 * @param inputFileName
+	 * @param outputFileName
+	 * @throws Exception
+	 */
+	private static boolean asposePptxToPdf(String inputFileName, String outputFileName){
+		boolean result = false;
+		try {
+			byte[] bytes = ConstantUtil.ASPOSE_WORD_LICENSE.getBytes("UTF-8");
+			InputStream in =  new ByteArrayInputStream(bytes);
+			com.aspose.slides.License asposeLic = new com.aspose.slides.License();
+			asposeLic.setLicense(in);
+        	Presentation pres = new Presentation(inputFileName);
+        	pres.save(outputFileName, com.aspose.slides.SaveFormat.Pdf);
+			in.close();
+			result = true;
+			logger.debug("OfficeFileUtil.asposePptxToPdf method executed is successful, output file path is: " + outputFileName);
+		}  catch (Exception e) {
+			logger.error("OfficeFileUtil.asposePptxToPdf method executed is error: ", e);
+		}
         return result;
 	}
 	
@@ -64,7 +116,7 @@ public class OfficeFileUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	private static boolean htmlToPdf(String fileInfo, String inputPath, String outputPath) throws Exception {
+	public static boolean htmlToPdf(String fileInfo, String inputPath, String outputPath) throws Exception {
 		boolean result = false;
 		String htmlFileNamePath = inputPath + fileInfo + ConstantUtil.HTML;	
 		String pdfFileNamePath = outputPath + fileInfo + ConstantUtil.PDF;
@@ -94,32 +146,34 @@ public class OfficeFileUtil {
 				
 			}else if(ConstantUtil.XLSX.equals(fileType) || ConstantUtil.XLS.equals(fileType)) {
 				//将XLSX文件转换为PDF
-				result = OfficeCmdUtil.excelToHtml(XLSX_PATH + inputFileName, HTML_XLSX_PATH + fileName + ConstantUtil.HTML);
-				logger.debug("输入文件为：" + inputFileName + ", xlsx转html的结果为：" + result);
+				result = asposeExcelToPdf(XLSX_PATH + inputFileName, PDF_XLSX_PATH + fileName + ConstantUtil.PDF);
+				//result = OfficeCmdUtil.excelToHtml(XLSX_PATH + inputFileName, HTML_XLSX_PATH + fileName + ConstantUtil.HTML);
+				logger.debug("输入文件为：" + inputFileName + ", xlsx转pdf的结果为：" + result);
 				FileUtils.forceDelete(new File(XLSX_PATH + inputFileName));
-				if(result) {
+				//if(result) {
 					//获取excel每个sheet转成的html文件名列表
-					List<String> list = getXlsxHtmlFileNameList(fileName);
-					int size = list.size();
+				//	List<String> list = getXlsxHtmlFileNameList(fileName);
+				//	int size = list.size();
 					//将每个html转换成pdf
-					for (int i = 0; i < size; i++) {
-						String name = list.get(i);
-						result = htmlToPdf(name, HTML_XLSX_PATH, PDF_XLSX_PATH);
-					}
-					logger.debug("输入文件为：" + inputFileName + ", html转pdf的结果为：" + result);
-					deleteHtmlFileByName(HTML_XLSX_PATH, fileName);
-				}
+				//	for (int i = 0; i < size; i++) {
+				//		String name = list.get(i);
+				//		result = htmlToPdf(name, HTML_XLSX_PATH, PDF_XLSX_PATH);
+				//	}
+				//	logger.debug("输入文件为：" + inputFileName + ", html转pdf的结果为：" + result);
+				//	deleteHtmlFileByName(HTML_XLSX_PATH, fileName);
+				//}
 			
 			}else if(ConstantUtil.PPTX.equals(fileType) || ConstantUtil.PPT.equals(fileType)) {
 				//将PPTX文件转换为PDF
-				result = OfficeCmdUtil.pptToHtml(PPTX_PATH + inputFileName, HTML_PPTX_PATH  + fileName + ConstantUtil.HTML);
-				logger.debug("输入文件为：" + inputFileName + ", pptx转html的结果为：" + result);
+				result = asposePptxToPdf(PPTX_PATH + inputFileName, PDF_PPTX_PATH + fileName + ConstantUtil.PDF);
+				//result = OfficeCmdUtil.pptToHtml(PPTX_PATH + inputFileName, HTML_PPTX_PATH  + fileName + ConstantUtil.HTML);
+				logger.debug("输入文件为：" + inputFileName + ", pptx转pdf的结果为：" + result);
 				FileUtils.forceDelete(new File(PPTX_PATH + inputFileName));
-				if(result) {
-					result = htmlToPdf(fileName, HTML_PPTX_PATH, PDF_PPTX_PATH);
-					logger.debug("输入文件为：" + inputFileName + ", html转pdf的结果为：" + result);
-					FileUtils.forceDelete(new File(HTML_PPTX_PATH + fileName + ConstantUtil.HTML));
-				}
+				//if(result) {
+				//	result = htmlToPdf(fileName, HTML_PPTX_PATH, PDF_PPTX_PATH);
+				//	logger.debug("输入文件为：" + inputFileName + ", html转pdf的结果为：" + result);
+				//	FileUtils.forceDelete(new File(HTML_PPTX_PATH + fileName + ConstantUtil.HTML));
+				//}
 			}else {
 				logger.error("OfficeFileUtil.officeToPdf 需转换的文件格式不符合规范：" + inputFileName);
 				return false;
@@ -137,7 +191,7 @@ public class OfficeFileUtil {
 	 * @param fileName
 	 * @return
 	 */
-	private static List<String> getXlsxHtmlFileNameList(String fileName){
+	public static List<String> getXlsxHtmlFileNameList(String fileName){
 		logger.debug("OfficeFileUtil.getXlsxHtmlFileNameList 需匹配的文件名为：" + fileName);
 		List<String> list = new ArrayList<String>();
 		//获取html/xlsx/文件夹下的文件名列表
