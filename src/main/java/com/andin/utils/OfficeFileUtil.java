@@ -1,12 +1,18 @@
 package com.andin.utils;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.aspose.words.Document;
+import com.aspose.words.License;
+import com.aspose.words.SaveFormat;
 
 public class OfficeFileUtil {
 
@@ -18,7 +24,7 @@ public class OfficeFileUtil {
 	
 	private final static String PPTX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PPTX_PATH;
 	
-	private final static String HTML_DOCX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.HTML_DOCX_PATH;
+	//private final static String HTML_DOCX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.HTML_DOCX_PATH;
 	
 	private final static String HTML_XLSX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.HTML_XLSX_PATH;
 	
@@ -29,6 +35,26 @@ public class OfficeFileUtil {
 	private final static String PDF_XLSX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_XLSX_PATH;
 	
 	private final static String PDF_PPTX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_PPTX_PATH;
+	
+	/**
+	 * word转pdf
+	 * @param inputFileName
+	 * @param outputFileName
+	 * @throws Exception
+	 */
+	private static boolean asposeWordToPdf(String inputFileName, String outputFileName) throws Exception {
+		boolean result = false;
+		byte[] bytes = ConstantUtil.ASPOSE_WORD_LICENSE.getBytes("UTF-8");
+		InputStream in =  new ByteArrayInputStream(bytes);
+        License asposeLic = new License();
+        asposeLic.setLicense(in);
+    	Document convertDoc = new Document(inputFileName);
+		convertDoc.save(outputFileName, SaveFormat.PDF);
+		in.close();
+        result = true;
+		logger.debug("OfficeFileUtil.asposeWordToPdf 转换成功， 输出文件路径为： " + outputFileName);
+        return result;
+	}
 	
 	/**
 	 * HTML转换PDF
@@ -56,17 +82,15 @@ public class OfficeFileUtil {
 			String fileType = inputFileName.substring(index);
 			if(ConstantUtil.DOCX.equals(fileType) || ConstantUtil.DOC.equals(fileType)) {
 				//将DOCX文件转换为PDF
-				result = OfficeCmdUtil.wordToHtml(DOCX_PATH + inputFileName, HTML_DOCX_PATH);
-				logger.debug("输入文件为：" + inputFileName + ", docx转html的结果为：" + result);
-				if(ConstantUtil.DOC.equals(fileType)) {					
-					FileUtils.forceDelete(new File(DOCX_PATH + fileName + ConstantUtil.DOC));
-				}
-				FileUtils.forceDelete(new File(DOCX_PATH + fileName + ConstantUtil.DOCX));
-				if(result) {
-					result = htmlToPdf(fileName, HTML_DOCX_PATH, PDF_DOCX_PATH);
-					logger.debug("输入文件为：" + inputFileName + ", html转pdf的结果为：" + result);
-					deleteHtmlFileByName(HTML_DOCX_PATH, fileName);
-				}
+				result = asposeWordToPdf(DOCX_PATH + inputFileName, PDF_DOCX_PATH + fileName + ConstantUtil.PDF);
+				//result = OfficeCmdUtil.wordToHtml(DOCX_PATH + inputFileName, HTML_DOCX_PATH);
+				logger.debug("输入文件为：" + inputFileName + ", docx转pdf的结果为：" + result);
+				FileUtils.forceDelete(new File(DOCX_PATH + inputFileName));
+				//if(result) {
+				//	result = htmlToPdf(fileName, HTML_DOCX_PATH, PDF_DOCX_PATH);
+				//	logger.debug("输入文件为：" + inputFileName + ", html转pdf的结果为：" + result);
+				//	deleteHtmlFileByName(HTML_DOCX_PATH, fileName);
+				//}
 				
 			}else if(ConstantUtil.XLSX.equals(fileType) || ConstantUtil.XLS.equals(fileType)) {
 				//将XLSX文件转换为PDF

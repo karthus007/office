@@ -141,6 +141,14 @@
 		    <artifactId>commons-io</artifactId>
 		    <version>2.6</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>com.andin</groupId>
+		    <artifactId>words</artifactId>
+		    <version>15.8.0</version>
+		    <scope>system</scope>
+		    <systemPath>${basedir}/lib/aspose-words-15.8.0-jdk16.jar</systemPath>
+		</dependency>
 
 	</dependencies>
 
