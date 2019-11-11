@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.andin.model.TaskModel;
 import com.andin.utils.HttpClientUtil;
 import com.andin.utils.OfficeFileUtil;
+import com.andin.utils.PropertiesUtil;
 import com.andin.utils.StringUtil;
 
 /**
@@ -23,9 +24,11 @@ import com.andin.utils.StringUtil;
 @EnableScheduling
 public class OfficeToPdfTask {
 	
-    private static ExecutorService pool = Executors.newFixedThreadPool(10);
-	
-    private static Logger logger = LoggerFactory.getLogger(OfficeToPdfTask.class);
+	private static final String TASK_THREAD_COUNT = PropertiesUtil.getProperties("task.thread.count", null);
+    
+	private static Logger logger = LoggerFactory.getLogger(OfficeToPdfTask.class);
+
+	private static ExecutorService pool = Executors.newFixedThreadPool(Integer.valueOf(TASK_THREAD_COUNT));
 
 	@Scheduled(cron = "*/5 * * * * ?")/** 每五秒触发一次 **/
 	public void getOfficeTaskListToPdf() throws Exception{

@@ -9,6 +9,9 @@ import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -27,8 +30,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.andin.model.WaterModel;
 import com.andin.service.OfficeService;
+import com.andin.thread.OfficeThread;
 import com.andin.utils.ConstantUtil;
-import com.andin.utils.OfficeFileUtil;
 import com.andin.utils.StringUtil;
 import com.andin.utils.WaterToPdfUtil;
 
@@ -37,6 +40,8 @@ import com.andin.utils.WaterToPdfUtil;
 public class OfficeController {
 	
     private static Logger logger = LoggerFactory.getLogger(OfficeController.class);
+    
+    private static ExecutorService pool = Executors.newSingleThreadExecutor();
 
 	@Resource
 	private OfficeService officeService;
@@ -209,8 +214,8 @@ public class OfficeController {
 		logger.debug("TestController.officeToPdf method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			Boolean result = OfficeFileUtil.officeToPdf(name);
-			if(result) {
+			Future<Boolean> task = pool.submit(new OfficeThread(name));
+			if(task.get()) {
 				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);
 			}else {
