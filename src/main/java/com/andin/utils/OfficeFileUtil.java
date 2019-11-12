@@ -3,8 +3,6 @@ package com.andin.utils;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -32,7 +30,7 @@ public class OfficeFileUtil {
 	
 	private final static String PDF_DOCX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_DOCX_PATH;
 	
-	private final static String PDF_XLSX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_XLSX_PATH;
+	//private final static String PDF_XLSX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_XLSX_PATH;
 	
 	private final static String PDF_PPTX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_PPTX_PATH;
 
@@ -66,7 +64,7 @@ public class OfficeFileUtil {
 	 * @param outputFileName
 	 * @throws Exception
 	 */
-	private static boolean asposeExcelToPdf(String inputFileName, String outputFileName){
+	public static boolean asposeExcelToPdf(String inputFileName, String outputFileName){
 		boolean result = false;
 		try {
 			byte[] bytes = ConstantUtil.ASPOSE_WORD_LICENSE.getBytes("UTF-8");
@@ -84,6 +82,30 @@ public class OfficeFileUtil {
         return result;
 	}
 	
+	/**
+	 * excel转html
+	 * @param inputFileName
+	 * @param outputFileName
+	 * @throws Exception
+	 */
+	private static boolean asposeExcelToHtml(String inputFileName, String outputFileName){
+		boolean result = false;
+		try {
+			byte[] bytes = ConstantUtil.ASPOSE_WORD_LICENSE.getBytes("UTF-8");
+			InputStream in =  new ByteArrayInputStream(bytes);
+			com.aspose.cells.License asposeLic = new com.aspose.cells.License();
+			asposeLic.setLicense(in);
+       	 	Workbook book = new Workbook(inputFileName);
+       	 	book.save(outputFileName, com.aspose.cells.SaveFormat.HTML);
+			in.close();
+			result = true;
+			logger.debug("OfficeFileUtil.asposeExcelToHtml method executed is successful, output file path is: " + outputFileName);
+		}  catch (Exception e) {
+			logger.error("OfficeFileUtil.asposeExcelToHtml method executed is error: ", e);
+		}
+        return result;
+	}
+
 	/**
 	 * pptx转pdf
 	 * @param inputFileName
@@ -146,10 +168,16 @@ public class OfficeFileUtil {
 				
 			}else if(ConstantUtil.XLSX.equals(fileType) || ConstantUtil.XLS.equals(fileType)) {
 				//将XLSX文件转换为PDF
-				result = asposeExcelToPdf(XLSX_PATH + inputFileName, PDF_XLSX_PATH + fileName + ConstantUtil.PDF);
+				//result = asposeExcelToPdf(XLSX_PATH + inputFileName, PDF_XLSX_PATH + fileName + ConstantUtil.PDF);
 				//result = OfficeCmdUtil.excelToHtml(XLSX_PATH + inputFileName, HTML_XLSX_PATH + fileName + ConstantUtil.HTML);
-				logger.debug("输入文件为：" + inputFileName + ", xlsx转pdf的结果为：" + result);
+				result = asposeExcelToHtml(XLSX_PATH + inputFileName, HTML_XLSX_PATH + fileName + ConstantUtil.HTML);
+				logger.debug("输入文件为：" + inputFileName + ", xlsx转html的结果为：" + result);
 				FileUtils.forceDelete(new File(XLSX_PATH + inputFileName));
+				if(result) {
+					//将html文件压缩成zip包
+					result = FileUtil.getHtmlFileZipByFileName(fileName);
+					logger.debug("输入文件为：" + inputFileName + ", html文件压缩成zip的结果为：" + result);
+				}
 				//if(result) {
 					//获取excel每个sheet转成的html文件名列表
 				//	List<String> list = getXlsxHtmlFileNameList(fileName);
@@ -184,30 +212,6 @@ public class OfficeFileUtil {
 			logger.error("OfficeFileUtil.officeToPdf method executed is failed : ", e);
 		}
 		return result;
-	}
-	
-	/**
-	 * 获取包含文件名的不带后缀的文件名列表
-	 * @param fileName
-	 * @return
-	 */
-	public static List<String> getXlsxHtmlFileNameList(String fileName){
-		logger.debug("OfficeFileUtil.getXlsxHtmlFileNameList 需匹配的文件名为：" + fileName);
-		List<String> list = new ArrayList<String>();
-		//获取html/xlsx/文件夹下的文件名列表
-		File dir = new File(HTML_XLSX_PATH);
-		File[] files = dir.listFiles();
-		for (int i = 0; i < files.length; i++) {
-			File file = files[i];
-			if(file.isFile()) {
-				String name = file.getName();
-				if(name.startsWith(fileName)) {
-					list.add(name.substring(0, name.lastIndexOf(".")));
-				}	
-			}
-		}
-		logger.debug("OfficeFileUtil.getXlsxHtmlFileNameList 匹配到的文件名列表为：" + list.toString());
-		return list;
 	}
 	
 	

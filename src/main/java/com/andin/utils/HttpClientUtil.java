@@ -108,9 +108,9 @@ public class HttpClientUtil {
 		CloseableHttpClient client = null;
 		CloseableHttpResponse response = null;
         try {
-        	if(filePath.contains(ConstantUtil.PDF_XLSX_PATH)) {
+        	if(filePath.contains(ConstantUtil.HTML_XLSX_PATH)) {
         		int index = filePath.lastIndexOf(".");
-        		filePath = filePath.substring(0, index) + "-1" + filePath.substring(index);
+        		filePath = filePath.substring(0, index) + ConstantUtil.ZIP;
         	}
         	InputStream bis = new FileInputStream(filePath);
         	byte[] arr = new byte[bis.available()];

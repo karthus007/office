@@ -68,10 +68,10 @@ public class OfficeToPdfTask {
 			//通过文件ID从PHP下载文件
 			downloadResult = HttpClientUtil.downloadFile(taskId, fileName);
 			if(downloadResult) {
-				//开始OFFICE转换PDF
+				//开始OFFICE转换PDF, excel转html
 				officeToPdfResult = OfficeFileUtil.officeToPdf(fileName);
 				if(officeToPdfResult) {
-					//通过文件名获取转换好的PDF文件的路径
+					//通过文件名获取转换好的PDF文件的路径, EXCEL为html路径
 					String filePath = StringUtil.getPdfFilePathByFileName(fileName, name);
 					//上传文件到PHP
 					uploadResult = HttpClientUtil.uploadFile(taskId, filePath);

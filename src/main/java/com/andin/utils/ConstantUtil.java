@@ -83,6 +83,8 @@ public class ConstantUtil {
 	
 	/********************* 上传文件路径常量 *********************/
 	
+	public static final String ZIP = ".zip";
+	
 	public static final String HTML = ".html";
 	
 	public static final String PDF = ".pdf";
