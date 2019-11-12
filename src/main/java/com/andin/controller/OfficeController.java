@@ -159,7 +159,7 @@ public class OfficeController {
 	@RequestMapping(value="/download", method=RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Object> download(HttpServletRequest req, HttpServletResponse resp){
-		logger.debug("TestController.getAppInfo method execute is start...");
+		logger.debug("TestController.download method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			String fileName = URLDecoder.decode(req.getParameter("name"), "UTF-8");
@@ -169,7 +169,7 @@ public class OfficeController {
 			if(type.equals(ConstantUtil.DOC) || type.equals(ConstantUtil.DOCX)) {
 				path.append(ConstantUtil.PDF_DOCX_PATH);
 			}else if(type.equals(ConstantUtil.XLS) || type.equals(ConstantUtil.XLSX)) {
-				path.append(ConstantUtil.PDF_XLSX_PATH);
+				path.append(ConstantUtil.HTML_XLSX_PATH);
 			}else if(type.equals(ConstantUtil.PPT) || type.equals(ConstantUtil.PPTX)) {
 				path.append(ConstantUtil.PDF_PPTX_PATH);
 			}else {
@@ -199,11 +199,11 @@ public class OfficeController {
 	        
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);
-			logger.debug("TestController.getAppInfo method execute is successful...");
+			logger.debug("TestController.download method execute is successful...");
 		} catch (Exception e) {
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
-			logger.error("TestController.getAppInfo method execute is error: ", e.getMessage());
+			logger.error("TestController.download method execute is error: ", e.getMessage());
 		}
 		return map;
 	}

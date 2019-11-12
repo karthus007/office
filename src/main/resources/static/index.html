@@ -64,8 +64,13 @@
                 if(res.resultCode == "0000"){
                 	$("#conversion").val(name);
                 	var index = name.lastIndexOf(".");
-                	$("#pdf").val(name.substring(0, index) + ".pdf");
-                	$("#type").val(name.substring(name.lastIndexOf(".")+1));
+                	var type = name.substring(name.lastIndexOf(".")+1);
+                	if(type=="xlsx" || type=="xls"){
+                		$("#pdf").val(name.substring(0, index) + ".zip");
+                	}else{
+                		$("#pdf").val(name.substring(0, index) + ".pdf");
+                	}
+                	$("#type").val(type);
                 	alert("上传成功");
                 }else{
                 	alert("上传失败");
