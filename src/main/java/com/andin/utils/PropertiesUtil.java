@@ -1,5 +1,7 @@
 package com.andin.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -9,11 +11,15 @@ import org.slf4j.LoggerFactory;
 public class PropertiesUtil {
 
 	private static final Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
-	private static String configFilePath = "config.properties";
+	
+	private static final String APP_CONFIG_PATH = "/app/config/";
+	
+	private static final String CONFIG_FILE_PATH = "config.properties";
+	
 	private static Properties configPros;
 	
 	static {
-		configPros = getProps(configFilePath);
+		configPros = getProps(CONFIG_FILE_PATH);
 		logger.debug("***PropertiesUtils.init method executed is successful...");
 	}
 	
@@ -21,7 +27,12 @@ public class PropertiesUtil {
 		Properties props = new Properties();		
 		InputStream stream = null;
 		try {
-			stream = PropertiesUtil.class.getClassLoader().getResourceAsStream(configpath);
+			File file = new File(APP_CONFIG_PATH + CONFIG_FILE_PATH);
+			if(file.exists()) {
+				stream = new FileInputStream(file);
+			}else {
+				stream = PropertiesUtil.class.getClassLoader().getResourceAsStream(configpath);				
+			}
 			props.load(stream);
 			logger.debug("***PropertiesUtils load properties is successful, file name is: " + configpath);
 		} catch (Exception e) {
@@ -53,10 +64,8 @@ public class PropertiesUtil {
 	}
 
 	public static void main(String[] args) {
-		
-		  String key = PropertiesUtil.getProperties("test", null);
-		  System.out.println(key);
-		 
+		String key = PropertiesUtil.getProperties("test", null);
+		System.out.println(key);
 	}
 
 }
