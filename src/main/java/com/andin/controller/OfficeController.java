@@ -48,7 +48,8 @@ public class OfficeController {
 	
 	
 	@RequestMapping(value="/pdfToWater", method=RequestMethod.POST)
-	public void pdfToWater(@RequestPart("file") Part part, HttpServletRequest req, HttpServletResponse resp){
+	@ResponseBody
+	public byte[] pdfToWater(@RequestPart("file") Part part, HttpServletRequest req, HttpServletResponse resp){
 		logger.debug("TestController.pdfToWater method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
@@ -78,24 +79,10 @@ public class OfficeController {
 				//生成水印文件
 				boolean result = WaterToPdfUtil.pdfToWater(inputFilePath, outputFilePath, water);
 				if(result) {
-					InputStream bis = new FileInputStream(outputFilePath);
-					
-					resp.addHeader(ConstantUtil.CONTENT_TYPE, ConstantUtil.APPLICATION_OCTET_STREAM);
-					resp.setCharacterEncoding(ConstantUtil.UTF_8);
-					resp.setContentLength(bis.available());
-					OutputStream out = resp.getOutputStream();
-			        
-					byte[] buff = new byte[1024*1024];
-			        int olen = 0;
-			        while((len = bis.read(buff)) != -1) {
-			        	out.write(buff, 0, olen);
-			        	out.flush();
-			        }
-			        bis.close();
-			        out.close();
-			        
+					byte[] bytes = FileUtils.readFileToByteArray(new File(outputFilePath));
 					map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 					map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);				
+					return bytes;
 				}else {
 					map.put(ConstantUtil.RESULT_CODE, ConstantUtil.PDF_TO_WATER_ERROR_CODE);
 					map.put(ConstantUtil.RESULT_MSG, ConstantUtil.PDF_TO_WATER_ERROR_MSG);
@@ -113,6 +100,7 @@ public class OfficeController {
 			logger.error("TestController.pdfToWater method execute is error: ", e);
 		}
 		logger.debug("TestController.pdfToWater response is: [resultCode=" + map.get(ConstantUtil.RESULT_CODE) + "],[resultMsg=" + map.get(ConstantUtil.RESULT_MSG) + "]");
+		return "".getBytes();
 	}
 	
 	@RequestMapping(value="/upload", method=RequestMethod.POST)
