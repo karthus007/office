@@ -52,6 +52,7 @@ public class OfficeController {
 	public byte[] pdfToWater(@RequestPart("file") Part part, HttpServletRequest req, HttpServletResponse resp){
 		logger.debug("TestController.pdfToWater method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
+		byte[] bytes = "".getBytes();
 		try {
 			String id = req.getParameter("id");
 			String com = req.getParameter("com");
@@ -79,10 +80,9 @@ public class OfficeController {
 				//生成水印文件
 				boolean result = WaterToPdfUtil.pdfToWater(inputFilePath, outputFilePath, water);
 				if(result) {
-					byte[] bytes = FileUtils.readFileToByteArray(new File(outputFilePath));
+					bytes = FileUtils.readFileToByteArray(new File(outputFilePath));
 					map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 					map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);				
-					return bytes;
 				}else {
 					map.put(ConstantUtil.RESULT_CODE, ConstantUtil.PDF_TO_WATER_ERROR_CODE);
 					map.put(ConstantUtil.RESULT_MSG, ConstantUtil.PDF_TO_WATER_ERROR_MSG);
@@ -100,7 +100,7 @@ public class OfficeController {
 			logger.error("TestController.pdfToWater method execute is error: ", e);
 		}
 		logger.debug("TestController.pdfToWater response is: [resultCode=" + map.get(ConstantUtil.RESULT_CODE) + "],[resultMsg=" + map.get(ConstantUtil.RESULT_MSG) + "]");
-		return "".getBytes();
+		return bytes;
 	}
 	
 	@RequestMapping(value="/upload", method=RequestMethod.POST)
