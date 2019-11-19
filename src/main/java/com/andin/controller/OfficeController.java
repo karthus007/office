@@ -54,11 +54,12 @@ public class OfficeController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		byte[] bytes = "".getBytes();
 		try {
-			String id = req.getParameter("id");
-			String com = req.getParameter("com");
-			String pass = req.getParameter("pass");
-			String head = req.getParameter("head");
-			String handler = req.getParameter("handler");
+			String id = req.getParameter("id") != null ? req.getParameter("id") : "";
+			String com = req.getParameter("com") != null ? req.getParameter("com") : "";
+			String pass = req.getParameter("pass") != null ? req.getParameter("pass") : "";
+			String head = req.getParameter("head") != null ? req.getParameter("head") : "";
+			String handler = req.getParameter("handler") != null ? req.getParameter("handler") : "";
+
 			WaterModel water = new WaterModel(handler, head, pass, com, id);
 			StringBuffer path = new StringBuffer();
 			path.append(StringUtil.getUploadFilePath());

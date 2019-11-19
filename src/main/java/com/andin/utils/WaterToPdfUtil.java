@@ -52,8 +52,10 @@ public class WaterToPdfUtil {
         	PdfStamper pdfStamper = new PdfStamper(pdfReader, outputStream);
         	PdfContentByte waterMarkContent;
             BaseFont bf = BaseFont.createFont(WATER_FONT_PATH, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-            pdfStamper.setEncryption(WATER_PASS.getBytes(), WATER_PASS.getBytes(), PdfWriter.ALLOW_MODIFY_CONTENTS, false);
-
+            if(!StringUtil.isEmpty(WATER_PASS)) {
+            	byte[] bytes = WATER_PASS.getBytes();
+            	pdfStamper.setEncryption(bytes, bytes, PdfWriter.ALLOW_MODIFY_CONTENTS, false);
+            }            
             PdfLayer layer = new PdfLayer(WATERMARK, pdfStamper.getWriter());
             for (int i = 1; i <= numberOfPages; i++){
                 waterMarkContent = pdfStamper.getOverContent(i);
