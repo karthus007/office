@@ -75,6 +75,14 @@ public class ConstantUtil {
 	
 	public static final String LICENSE_ERROR_MSG = "license权限认证失败";
 	
+	public static final String LICENSE_INVALID_ERROR_CODE = "0008";
+	
+	public static final String LICENSE_INVALID_ERROR_MSG = "该license证书无效";
+	
+	public static final String LICENSE_NOAUTH_ERROR_CODE = "0009";
+	
+	public static final String LICENSE_NOAUTH_ERROR_MSG = "license未认证";
+	
 	
 	/********************* 系统常量 *********************/
 	
@@ -137,11 +145,17 @@ public class ConstantUtil {
 	
 	/********************* license信息  *********************/
 	
+	public static final String LICENSE_KEY = "license_key";
+	
 	public static final String COM_KEY = "company";
 	
 	public static final String COM_VALUE = "华工安鼎信息技术有限责任公司";
 
 	public static final String CREATE_TIME = "create_time";
+	
+	public static final String LICENSE_PATH = "license/";
+	
+	public static final String LICENSE_NAME = "license.cer";
 	
 	/********************* OFFICE转PDF凭证  *********************/
 	

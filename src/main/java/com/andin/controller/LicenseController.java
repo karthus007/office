@@ -1,6 +1,8 @@
 package com.andin.controller;
 
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,16 +16,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.andin.filter.OfficeFilter;
 import com.andin.license.OfficeLicense;
+import com.andin.task.OfficeToPdfTask;
 import com.andin.utils.ConstantUtil;
 import com.andin.utils.StringUtil;
 
 @Controller
 @RequestMapping("/license")
 public class LicenseController {
-	
-	private static String key = "";
-	
+		
     private static Logger logger = LoggerFactory.getLogger(LicenseController.class);
 	
 	@RequestMapping(value="/uploadLicense", method=RequestMethod.POST)
@@ -32,14 +34,24 @@ public class LicenseController {
 		logger.debug("TestController.upload method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			
+			String name = part.getSubmittedFileName();
+			if(!ConstantUtil.LICENSE_NAME.equals(name)) {
+				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.LICENSE_INVALID_ERROR_CODE);
+				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.LICENSE_INVALID_ERROR_MSG);
+				return map;
+			}
 			InputStream in = part.getInputStream();
 			byte[] bytes = new byte[in.available()];
 			in.read(bytes);
 			in.close();
 			String license = new String(bytes, ConstantUtil.UTF_8);
-			boolean result = OfficeLicense.checkLicense(license, key);
+			boolean result = OfficeLicense.checkLicense(license);
 			if(result) {
+				OutputStream los = new FileOutputStream(StringUtil.getUploadFilePath() + ConstantUtil.LICENSE_PATH + ConstantUtil.LICENSE_NAME);
+				los.write(bytes);
+				los.close();
+				OfficeFilter.licenseStatus = true;
+				OfficeToPdfTask.licenseStatus = true;
 				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);				
 			}else {
@@ -61,9 +73,7 @@ public class LicenseController {
 		logger.debug("LicenseController.getLicense method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			String license = StringUtil.getRandomString(32);
-			key = license;
-			map.put("license", license);
+			map.put("license", StringUtil.getOfficeUUID());
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);
 			logger.debug("LicenseController.getLicense method execute is successful...");

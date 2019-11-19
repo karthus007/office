@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
 import com.andin.utils.ConstantUtil;
+import com.andin.utils.StringUtil;
 
 public class OfficeLicense {
 	
@@ -94,7 +95,7 @@ public class OfficeLicense {
     }
     
     /**
-          * 通过key生成lincense
+     * 通过key生成lincense
      * @param key
      * @return
      * @throws Exception
@@ -102,6 +103,7 @@ public class OfficeLicense {
     private static String getLicenseByKey(String key) throws Exception{
     	String license = null;
     	JSONObject json = new JSONObject();
+    	json.put(ConstantUtil.LICENSE_KEY, key);
     	json.put(ConstantUtil.COM_KEY, ConstantUtil.COM_VALUE);
     	json.put(ConstantUtil.CREATE_TIME, new Date().getTime());
     	license = aesEncrypt(json.toJSONString(), key);
@@ -109,20 +111,18 @@ public class OfficeLicense {
     }
     
     /**
-          * 通过key检测license是否成功
+     * 通过key检测license是否成功
      * @param license
      * @param key
      * @return
      */
-    public static boolean checkLicense(String license, String key) {
+    public static boolean checkLicense(String license) {
     	boolean result = false;
     	try {
-			String data = aesDecrypt(license, key);
+			String data = aesDecrypt(license.substring(32), license.substring(0, 32));
 	        JSONObject info = JSONObject.parseObject(data);
-	        String company = info.getString(ConstantUtil.COM_KEY);
-	        if(ConstantUtil.COM_VALUE.equals(company)) {
-	        	result = true;
-	        }
+	        String uuid = info.getString(ConstantUtil.LICENSE_KEY);
+	        result = StringUtil.checkOfficeLicenseByUUID(uuid);
     	} catch (Exception e) {
     		logger.error("***OfficeLicense.checkLicense method executed is error: ", e);
 		}
@@ -134,7 +134,5 @@ public class OfficeLicense {
     	String key = "43agtjqtl2wluub6sofm7x39ubyheulm";
         String encrypt = getLicenseByKey(key);
         System.out.println("en key is: " + encrypt);
-        boolean result = checkLicense(encrypt, key);
-        System.out.println(result);
     }
 }

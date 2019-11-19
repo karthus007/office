@@ -1,6 +1,13 @@
 package com.andin.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.InetAddress;
 import java.util.Random;
+import java.util.UUID;
+
+import com.andin.license.OfficeLicense;
 
 public class StringUtil {
 	
@@ -121,6 +128,86 @@ public class StringUtil {
 			break;
 		}
 		return fileType;
+	}
+	
+	/**
+	 * 通过IP生成UUID
+	 * @return
+	 * @throws Exception
+	 */
+	public static String getOfficeUUID() throws Exception {
+		StringBuffer officeid = new StringBuffer(32);
+		InetAddress addr = InetAddress.getLocalHost();
+		String ip = addr.getHostAddress();
+		String uuid = UUID.randomUUID().toString().replace("-", "");
+		String[] arr = ip.split("\\.");
+		for (int i = 0; i < arr.length; i++) {
+			String rule = String.valueOf((Integer.valueOf(arr[i]) + 111));
+			officeid.append(uuid.substring(i*8, i*8 + 2));
+			officeid.append(rule.charAt(0));
+			officeid.append(uuid.substring(i*8 + 2, i*8 + 3));
+			officeid.append(rule.charAt(1));
+			officeid.append(uuid.substring(i*8 + 3, i*8 + 4));
+			officeid.append(rule.charAt(2));
+			officeid.append(uuid.substring(i*8 + 4, i*8 + 5));
+		}
+		return officeid.toString();
+	}
+	
+	public static boolean checkOfficeLicenseByUUID(String uuid) {
+		boolean result = false;
+		try {
+			InetAddress addr = InetAddress.getLocalHost();
+			String host = addr.getHostAddress();
+			//通过uuid获取ip
+			StringBuffer ip = new StringBuffer(12);
+			ip.append(uuid.charAt(2));
+			ip.append(uuid.charAt(4));
+			ip.append(uuid.charAt(6));
+			ip.append(uuid.charAt(10));
+			ip.append(uuid.charAt(12));
+			ip.append(uuid.charAt(14));
+			ip.append(uuid.charAt(18));
+			ip.append(uuid.charAt(20));
+			ip.append(uuid.charAt(22));
+			ip.append(uuid.charAt(26));
+			ip.append(uuid.charAt(28));
+			ip.append(uuid.charAt(30));
+			String[] arr = host.split("\\.");
+			StringBuffer officeip = new StringBuffer(12);
+			for (int i = 0; i < arr.length; i++) {
+				String rule = String.valueOf((Integer.valueOf(arr[i]) + 111));
+				officeip.append(rule);
+			}
+			if(officeip.toString().equals(ip.toString())) {
+				 result = true;
+			}
+		} catch (Exception e) {
+			 result = false;
+		}
+		return result;
+	}
+	
+	/**
+	 * 获取项目的license的状态
+	 * @return
+	 */
+	public static boolean getLicenseStatus() {
+		boolean licenseStatus = false;
+		try {
+			File file = new File(StringUtil.getUploadFilePath() + ConstantUtil.LICENSE_PATH + ConstantUtil.LICENSE_NAME);
+			if(file.exists()) {
+				InputStream in = new FileInputStream(file);
+				byte[] bytes = new byte[in.available()];
+				in.read(bytes);
+				in.close();
+				String license = new String(bytes, ConstantUtil.UTF_8);
+				licenseStatus = OfficeLicense.checkLicense(license);
+			}
+		} catch (Exception e) {
+			licenseStatus = false;
+		}
+		return licenseStatus;
 	}
 
 }

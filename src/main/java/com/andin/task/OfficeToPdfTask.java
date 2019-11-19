@@ -29,15 +29,25 @@ public class OfficeToPdfTask {
 	private static Logger logger = LoggerFactory.getLogger(OfficeToPdfTask.class);
 
 	private static ExecutorService pool = Executors.newFixedThreadPool(Integer.valueOf(TASK_THREAD_COUNT));
+	
+	public static boolean licenseStatus = false;
+	
+	static {
+		licenseStatus = StringUtil.getLicenseStatus();
+	}
 
 	@Scheduled(cron = "*/5 * * * * ?")/** 每五秒触发一次 **/
 	public void getOfficeTaskListToPdf() throws Exception{
-		logger.debug("OfficeToPdfTask.getOfficeTaskListToPdf method executed is start...");
-		//获取任务列表
-		TaskModel task = HttpClientUtil.getTask();
-		if(task != null) {
-			TaskThread thread = new TaskThread(task);
-			pool.execute(thread);
+		if(licenseStatus) {
+			logger.debug("OfficeToPdfTask.getOfficeTaskListToPdf method executed is start...");
+			//获取任务列表
+			TaskModel task = HttpClientUtil.getTask();
+			if(task != null) {
+				TaskThread thread = new TaskThread(task);
+				pool.execute(thread);
+			}			
+		}else {
+			logger.debug("OfficeToPdfTask.getOfficeTaskListToPdf license is authorization failed...");
 		}
 	}
 	
