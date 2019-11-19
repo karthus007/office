@@ -131,8 +131,8 @@ public class OfficeLicense {
 	
     
     public static void main(String[] args) throws Exception {
-    	String key = "43agtjqtl2wluub6sofm7x39ubyheulm";
+    	String key = "123d073f40297894ac1a1b333526109e";
         String encrypt = getLicenseByKey(key);
-        System.out.println("en key is: " + encrypt);
+        System.out.println("en key is: [" + key + encrypt + "]");
     }
 }
