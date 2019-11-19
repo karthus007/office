@@ -30,7 +30,7 @@ public class OfficeToPdfTask {
 
 	private static ExecutorService pool = Executors.newFixedThreadPool(Integer.valueOf(TASK_THREAD_COUNT));
 
-	@Scheduled(cron = "*/5 * * * * ?")/** 每五秒触发一次 **/
+	//@Scheduled(cron = "*/5 * * * * ?")/** 每五秒触发一次 **/
 	public void getOfficeTaskListToPdf() throws Exception{
 		logger.debug("OfficeToPdfTask.getOfficeTaskListToPdf method executed is start...");
 		//获取任务列表

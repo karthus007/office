@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,7 +90,7 @@ public class FileUtil {
 				    in.close();
 				    zos.closeEntry();
 				}
-				FileUtils.forceDelete(file);
+				deleteFile(file);
 			}
 			zos.close();
 			result = true;
@@ -100,6 +99,45 @@ public class FileUtil {
 			logger.error("FileUtil.getHtmlFileZipByFileName method executed is error: ", e);
 		}
 		return result;
+	}
+	
+	
+	/**
+	  * 通过文件删除文件或文件夹
+	 * @param file
+	 * @return
+	 */
+	public static boolean deleteFile(File file) {
+		boolean result = false;
+		try {
+			if(file.exists()) {
+				if(file.isDirectory()) {
+					File[] list = file.listFiles();
+					for (int i = 0; i < list.length; i++) {
+						deleteFile(list[i]);
+					}	
+				}
+				file.delete();
+				logger.debug("FileUtil.deleteFile file delete is successful, path is: " + file.getAbsolutePath());
+			}else {
+				logger.debug("FileUtil.deleteFile file is not exist, path is: " + file.getAbsolutePath());
+			}
+			result = true;
+		} catch (Exception e) {
+			result = false;
+			logger.error("FileUtil.deleteFile method executed is error: ", e);
+		}
+		return result;
+	}
+	
+	/**
+	  * 通过文件路径删除文件或文件夹
+	 * @param path
+	 * @return
+	 */
+	public static boolean deleteFilePath(String path) {
+		File file = new File(path);
+		return deleteFile(file);
 	}
 	
 }

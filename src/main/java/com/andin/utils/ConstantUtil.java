@@ -71,6 +71,10 @@ public class ConstantUtil {
 	
 	public static final String PDF_TO_WATER_ERROR_MSG = "PDF文件添加水印失败";
 	
+	public static final String LICENSE_ERROR_CODE = "0007";
+	
+	public static final String LICENSE_ERROR_MSG = "license权限认证失败";
+	
 	
 	/********************* 系统常量 *********************/
 	
@@ -130,6 +134,14 @@ public class ConstantUtil {
 	public static final String WATER_FONT_PATH = "water/simhei.ttf";
 	
 	public static final String WATER_IMAGE_PATH = "water/test.jpg";
+	
+	/********************* license信息  *********************/
+	
+	public static final String COM_KEY = "company";
+	
+	public static final String COM_VALUE = "华工安鼎信息技术有限责任公司";
+
+	public static final String CREATE_TIME = "create_time";
 	
 	/********************* OFFICE转PDF凭证  *********************/
 	

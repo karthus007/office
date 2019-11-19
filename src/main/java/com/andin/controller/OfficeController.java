@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -32,6 +31,7 @@ import com.andin.model.WaterModel;
 import com.andin.service.OfficeService;
 import com.andin.thread.OfficeThread;
 import com.andin.utils.ConstantUtil;
+import com.andin.utils.FileUtil;
 import com.andin.utils.StringUtil;
 import com.andin.utils.WaterToPdfUtil;
 
@@ -80,15 +80,18 @@ public class OfficeController {
 				//生成水印文件
 				boolean result = WaterToPdfUtil.pdfToWater(inputFilePath, outputFilePath, water);
 				if(result) {
-					bytes = FileUtils.readFileToByteArray(new File(outputFilePath));
+					InputStream bin = new FileInputStream(outputFilePath);
+					bytes = new byte[bin.available()];
+					bin.read(bytes);
+					bin.close();
 					map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 					map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);				
 				}else {
 					map.put(ConstantUtil.RESULT_CODE, ConstantUtil.PDF_TO_WATER_ERROR_CODE);
 					map.put(ConstantUtil.RESULT_MSG, ConstantUtil.PDF_TO_WATER_ERROR_MSG);
 				}
-				FileUtils.forceDelete(new File(inputFilePath));
-				FileUtils.forceDelete(new File(outputFilePath));
+				FileUtil.deleteFilePath(inputFilePath);
+				FileUtil.deleteFilePath(outputFilePath);
 				logger.debug("TestController.pdfToWater method execute is successful...");
 			}else {
 				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.UPLOAD_FILE_TYPE_ERROR_CODE);

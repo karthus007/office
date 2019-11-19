@@ -1,5 +1,7 @@
 package com.andin.utils;
 
+import java.util.Random;
+
 public class StringUtil {
 	
     private static final String FILE_PATH = PropertiesUtil.getProperties("file.path", null);
@@ -8,6 +10,24 @@ public class StringUtil {
 	
 	private final static String UPLOAD_PATH = "/upload/";
 	
+    private static final String RANDOM_INFO = "abcdefghijklmnopqrstuvwxyz0123456789";
+	
+    
+	/**
+	  * 根据长度生成指定的字符串
+	 * @param length
+	 * @return
+	 */
+	public static String getRandomString(int length){
+	    Random random = new Random();
+	    StringBuffer sb = new StringBuffer();
+	    for(int i=0; i<length; i++){
+	      int number = random.nextInt(36);
+	      sb.append(RANDOM_INFO.charAt(number));
+	    }
+	    return sb.toString();
+	}
+    
 	/**
 	  * 判断字符串是否为空
 	 * @param name
