@@ -9,7 +9,7 @@
 </head>
 <body style="margin: 60px 100px;background-color: #bae2b0;">
 	<pre style="margin: 30px auto; width: 480px; text-align: center; font-size: 30px;background-color: #d9edf7;">LICENSE</pre>
-	<div class="row" style="width: 600px; margin: 30px auto;">
+	<div class="row" style="width: 600px; margin: 30px auto;display: none">
 	  <div class="col-lg-1">
 	    <div class="input-group">
 	      <input type="file" id="license" class="form-control" style="width: 30vw">
@@ -18,13 +18,12 @@
 	      </span>
 	    </div>
 	    <div class="input-group" style="margin-top: 30px">
-	      <span id="key" class="form-control" style="width: 30vw"></span>
-	      <span class="input-group-btn" style="margin-right: 30px">
-	        <button class="btn btn-default" type="button" onclick="getLicense();"  style="width: 150px;">获取LICENSE</button>
-	      </span>
+	      <span style="width: 200px;font-size: 16px;font-weight: bold; float: left;height: 34px;line-height: 34px;">LICENSE CODE: </span>
+	      <span id="key" class="form-control" style="width: 30vw;position: absolute;left: 150px;"></span>
 	    </div>
 	  </div>
 	</div>
+	<div id="success" style="font-size: 36px;font-family: sans-serif;color: green;text-align: center; display: none" >恭喜您，您的LICENSE权限已认证通过！</div>
 </body>
 <script src="js/jquery-2.1.4.min.js"></script>
 <script>
@@ -44,7 +43,8 @@
             contentType: false,   // 告诉jQuery不要去设置Content-Type请求头
             success: function (res) {
                 if(res.resultCode == "0000"){
-                	alert("认证成功");
+            		$("#success").show();
+            		$(".row").hide();
                 }else{
                 	alert("认证失败");
                 }
@@ -59,12 +59,24 @@
             contentType: "application/json",
             success: function (res) {
                 if(res.resultCode == "0000"){
-                	var license = res.license;
-                	$("#key").text(license);
+                	var status = res.status;
+                	if(status){
+                		$("#success").show();
+                	}else{
+                		var license = localStorage.getItem("license");
+                		if(license == null){
+    	                	license = res.license;
+    	                	localStorage.setItem("license", license);
+                		} 
+                		$("#key").text(license);
+                		$(".row").show();
+                	}
                 }
             }
         });
 	}
+	
+	getLicense();
 	
 </script>
 </html>

@@ -14,18 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
+import com.andin.utils.CommonUtil;
 import com.andin.utils.ConstantUtil;
-import com.andin.utils.StringUtil;
 
 @Component
 @WebFilter(filterName = "filter")
 public class OfficeFilter implements Filter{
-	
-	public static boolean licenseStatus = false;
-	
-	static {
-		licenseStatus = StringUtil.getLicenseStatus();
-	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -36,7 +30,7 @@ public class OfficeFilter implements Filter{
 		if(uri.startsWith("/license") || uri.contains(".")) {
 			chain.doFilter(request, response);			
 		}else {
-			if(licenseStatus) {
+			if(CommonUtil.LICENSE_STATUS) {
 				chain.doFilter(request, response);			
 			}else {
 				writeAjaxResponse(resp);				

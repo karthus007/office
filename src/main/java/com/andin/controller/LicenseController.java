@@ -16,9 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.andin.filter.OfficeFilter;
 import com.andin.license.OfficeLicense;
-import com.andin.task.OfficeToPdfTask;
+import com.andin.utils.CommonUtil;
 import com.andin.utils.ConstantUtil;
 import com.andin.utils.StringUtil;
 
@@ -50,8 +49,7 @@ public class LicenseController {
 				OutputStream los = new FileOutputStream(StringUtil.getUploadFilePath() + ConstantUtil.LICENSE_PATH + ConstantUtil.LICENSE_NAME);
 				los.write(bytes);
 				los.close();
-				OfficeFilter.licenseStatus = true;
-				OfficeToPdfTask.licenseStatus = true;
+				CommonUtil.LICENSE_STATUS = true;
 				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);				
 			}else {
@@ -73,7 +71,10 @@ public class LicenseController {
 		logger.debug("LicenseController.getLicense method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			map.put("license", StringUtil.getOfficeUUID());
+			if(!CommonUtil.LICENSE_STATUS) {
+				map.put("license", StringUtil.getOfficeUUID());				
+			}
+			map.put("status", CommonUtil.LICENSE_STATUS);
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);
 			logger.debug("LicenseController.getLicense method execute is successful...");

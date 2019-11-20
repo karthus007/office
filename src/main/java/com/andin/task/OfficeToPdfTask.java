@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.andin.model.TaskModel;
+import com.andin.utils.CommonUtil;
 import com.andin.utils.HttpClientUtil;
 import com.andin.utils.OfficeFileUtil;
 import com.andin.utils.PropertiesUtil;
@@ -29,16 +30,10 @@ public class OfficeToPdfTask {
 	private static Logger logger = LoggerFactory.getLogger(OfficeToPdfTask.class);
 
 	private static ExecutorService pool = Executors.newFixedThreadPool(Integer.valueOf(TASK_THREAD_COUNT));
-	
-	public static boolean licenseStatus = false;
-	
-	static {
-		licenseStatus = StringUtil.getLicenseStatus();
-	}
 
 	@Scheduled(cron = "*/5 * * * * ?")/** 每五秒触发一次 **/
 	public void getOfficeTaskListToPdf() throws Exception{
-		if(licenseStatus) {
+		if(CommonUtil.LICENSE_STATUS) {
 			logger.debug("OfficeToPdfTask.getOfficeTaskListToPdf method executed is start...");
 			//获取任务列表
 			TaskModel task = HttpClientUtil.getTask();
