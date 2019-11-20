@@ -97,7 +97,7 @@ public class OfficeLicense {
     }
     
     /**
-     * 通过key生成lincense
+          * 通过key生成lincense
      * @param key
      * @return
      * @throws Exception
@@ -115,7 +115,7 @@ public class OfficeLicense {
     }
     
     /**
-     * 通过key检测license是否成功
+          * 通过key检测license是否成功
      * @param license
      * @param key
      * @return
@@ -135,9 +135,9 @@ public class OfficeLicense {
 	
     
     public static void main(String[] args) throws Exception {
-    	String key = "623a003e822a7c94b91e2644e42c406c";
+    	String key = "0736063dc126739482102446f3235d43";
     	String path = "d:/app/";
         getLicenseFileByKey(key, path);
-        System.out.println("====get license method executed is successful====");
+        System.out.println("====get license method executed is successful====");        
     }
 }
