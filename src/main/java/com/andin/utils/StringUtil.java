@@ -3,7 +3,10 @@ package com.andin.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 import java.util.Random;
 import java.util.UUID;
 
@@ -137,8 +140,7 @@ public class StringUtil {
 	 */
 	public static String getOfficeUUID() throws Exception {
 		StringBuffer officeid = new StringBuffer(32);
-		InetAddress addr = InetAddress.getLocalHost();
-		String ip = addr.getHostAddress();
+		String ip = getInet4Address();
 		String uuid = UUID.randomUUID().toString().replace("-", "");
 		String[] arr = ip.split("\\.");
 		for (int i = 0; i < arr.length; i++) {
@@ -157,8 +159,7 @@ public class StringUtil {
 	public static boolean checkOfficeLicenseByUUID(String uuid) {
 		boolean result = false;
 		try {
-			InetAddress addr = InetAddress.getLocalHost();
-			String host = addr.getHostAddress();
+			String host = getInet4Address();
 			//通过uuid获取ip
 			StringBuffer ip = new StringBuffer(12);
 			ip.append(uuid.charAt(2));
@@ -208,6 +209,28 @@ public class StringUtil {
 			licenseStatus = false;
 		}
 		return licenseStatus;
+	}
+	
+	/**
+	  * 获取IP地址
+	 * @return
+	 * @throws Exception
+	 */
+	public static String getInet4Address() throws Exception{
+		Enumeration<NetworkInterface> nis = null;
+		String ip = null;
+		nis = NetworkInterface.getNetworkInterfaces();
+		for (; nis.hasMoreElements();) {
+			NetworkInterface ni = nis.nextElement();
+			Enumeration<InetAddress> ias = ni.getInetAddresses();
+			for (;ias.hasMoreElements();) {
+				InetAddress ia = ias.nextElement();
+				if (ia instanceof Inet4Address && !ia.getHostAddress().equals("127.0.0.1")) {
+					ip = ia.getHostAddress();
+				}
+			}
+		}
+		return ip;
 	}
 
 }
