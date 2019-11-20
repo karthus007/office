@@ -27,7 +27,7 @@ public class OfficeFilter implements Filter{
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
 		String uri = req.getRequestURI();
-		if(uri.startsWith("/license") || uri.contains(".")) {
+		if(uri.contains("/license") || uri.contains(".")) {
 			chain.doFilter(request, response);			
 		}else {
 			if(CommonUtil.LICENSE_STATUS) {
