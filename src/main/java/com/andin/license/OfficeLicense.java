@@ -1,5 +1,7 @@
 package com.andin.license;
 
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Date;
 
 import javax.crypto.Cipher;
@@ -100,14 +102,16 @@ public class OfficeLicense {
      * @return
      * @throws Exception
      */
-    private static String getLicenseByKey(String key) throws Exception{
+    private static void getLicenseFileByKey(String key, String licenseFilePath) throws Exception{
     	String license = null;
     	JSONObject json = new JSONObject();
     	json.put(ConstantUtil.LICENSE_KEY, key);
     	json.put(ConstantUtil.COM_KEY, ConstantUtil.COM_VALUE);
     	json.put(ConstantUtil.CREATE_TIME, new Date().getTime());
-    	license = aesEncrypt(json.toJSONString(), key);
-    	return license;
+    	license = key + aesEncrypt(json.toJSONString(), key);
+    	OutputStream os = new FileOutputStream(licenseFilePath + ConstantUtil.LICENSE_NAME);
+    	os.write(license.getBytes());
+    	os.close();
     }
     
     /**
@@ -131,8 +135,9 @@ public class OfficeLicense {
 	
     
     public static void main(String[] args) throws Exception {
-    	String key = "123d073f40297894ac1a1b333526109e";
-        String encrypt = getLicenseByKey(key);
-        System.out.println("en key is: [" + key + encrypt + "]");
+    	String key = "733c0232802e779483191c386b2a1e98";
+    	String path = "d:/app/";
+        getLicenseFileByKey(key, path);
+        System.out.println("====get license method executed is successful====");
     }
 }
