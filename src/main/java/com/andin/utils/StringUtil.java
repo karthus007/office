@@ -217,9 +217,8 @@ public class StringUtil {
 	 * @throws Exception
 	 */
 	public static String getInet4Address() throws Exception{
-		Enumeration<NetworkInterface> nis = null;
 		String ip = null;
-		nis = NetworkInterface.getNetworkInterfaces();
+		Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
 		for (; nis.hasMoreElements();) {
 			NetworkInterface ni = nis.nextElement();
 			Enumeration<InetAddress> ias = ni.getInetAddresses();
