@@ -50,6 +50,7 @@
         var file = $("#office")[0].files[0];
 		if(file == null){
 			alert("请选择需上传的文件");
+			return;
 		}
         var formData = new FormData();//初始化一个FormData对象
         var name = file.name;
@@ -83,6 +84,7 @@
 		var name = $("#conversion").val();
 		if(name == "" || type == null){
 			alert("请填写需转换的文件名");
+			return;
 		}
 		var data = {"name": name};
 		$.ajax({
@@ -105,6 +107,7 @@
 		var type = $("#type").val();
 		if(name == "" || type == null){
 			alert("请填写下载的文件名和源文件的类型");
+			return;
 		}
 		var url = "./office/download?name=" + name + "&type=" + type;
 		location.href = encodeURI(encodeURI(url));

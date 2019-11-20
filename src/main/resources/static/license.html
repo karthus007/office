@@ -31,6 +31,7 @@
         var file = $("#license")[0].files[0];
 		if(file == null){
 			alert("请选择需上传的文件");
+			return;
 		}
         var formData = new FormData();//初始化一个FormData对象
         var name = file.name;
