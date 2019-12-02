@@ -52,6 +52,12 @@ public class OfficeFileUtil {
 			com.aspose.words.License asposeLic = new com.aspose.words.License();
 			asposeLic.setLicense(in);
 			Document convertDoc = new Document(inputFileName);
+			if(convertDoc.getProtectionType() == 2) {
+				convertDoc.unprotect("http://www.gztemco.com/");
+				//convertDoc.acceptAllRevisions();
+				//convertDoc.protect(2, "http://www.gztemco.com/");
+			}
+			convertDoc.acceptAllRevisions();
 			convertDoc.save(outputFileName, com.aspose.words.SaveFormat.PDF);
 			in.close();
 			result = true;
