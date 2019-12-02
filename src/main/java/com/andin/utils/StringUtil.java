@@ -95,7 +95,7 @@ public class StringUtil {
 		if(fileName.endsWith(ConstantUtil.DOC) || fileName.endsWith(ConstantUtil.DOCX)) {
 			path.append(ConstantUtil.PDF_DOCX_PATH);
 		}else if(fileName.endsWith(ConstantUtil.XLS) || fileName.endsWith(ConstantUtil.XLSX)) {
-			path.append(ConstantUtil.HTML_XLSX_PATH);
+			path.append(ConstantUtil.PDF_XLSX_PATH);
 		}else if(fileName.endsWith(ConstantUtil.PPT) || fileName.endsWith(ConstantUtil.PPTX)) {
 			path.append(ConstantUtil.PDF_PPTX_PATH);
 		}else if(fileName.endsWith(ConstantUtil.PDF)) {

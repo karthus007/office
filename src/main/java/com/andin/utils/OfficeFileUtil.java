@@ -28,13 +28,13 @@ public class OfficeFileUtil {
 	
 	//private final static String HTML_DOCX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.HTML_DOCX_PATH;
 	
-	private final static String HTML_XLSX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.HTML_XLSX_PATH;
+	//private final static String HTML_XLSX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.HTML_XLSX_PATH;
 	
 	//private final static String HTML_PPTX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.HTML_PPTX_PATH;
 	
 	private final static String PDF_DOCX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_DOCX_PATH;
 	
-	//private final static String PDF_XLSX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_XLSX_PATH;
+	private final static String PDF_XLSX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_XLSX_PATH;
 	
 	private final static String PDF_PPTX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_PPTX_PATH;
 
@@ -92,7 +92,7 @@ public class OfficeFileUtil {
 	 * @param outputFileName
 	 * @throws Exception
 	 */
-	private static boolean asposeExcelToHtml(String inputFileName, String outputFileName){
+	public static boolean asposeExcelToHtml(String inputFileName, String outputFileName){
 		boolean result = false;
 		try {
 			byte[] bytes = ConstantUtil.ASPOSE_WORD_LICENSE.getBytes("UTF-8");
@@ -186,16 +186,16 @@ public class OfficeFileUtil {
 				
 			}else if(ConstantUtil.XLSX.equals(fileType) || ConstantUtil.XLS.equals(fileType)) {
 				//将XLSX文件转换为PDF
-				//result = asposeExcelToPdf(XLSX_PATH + inputFileName, PDF_XLSX_PATH + fileName + ConstantUtil.PDF);
+				result = asposeExcelToPdf(XLSX_PATH + inputFileName, PDF_XLSX_PATH + fileName + ConstantUtil.PDF);
 				//result = OfficeCmdUtil.excelToHtml(XLSX_PATH + inputFileName, HTML_XLSX_PATH + fileName + ConstantUtil.HTML);
-				result = asposeExcelToHtml(XLSX_PATH + inputFileName, HTML_XLSX_PATH + fileName + ConstantUtil.HTML);
-				logger.debug("输入文件为：" + inputFileName + ", xlsx转html的结果为：" + result);
+				//result = asposeExcelToHtml(XLSX_PATH + inputFileName, HTML_XLSX_PATH + fileName + ConstantUtil.HTML);
+				logger.debug("输入文件为：" + inputFileName + ", xlsx转pdf的结果为：" + result);
 				FileUtil.deleteFilePath(XLSX_PATH + inputFileName);
-				if(result) {
+				//if(result) {
 					//将html文件压缩成zip包
-					result = FileUtil.getHtmlFileZipByFileName(fileName);
-					logger.debug("输入文件为：" + inputFileName + ", html文件压缩成zip的结果为：" + result);
-				}
+				//	result = FileUtil.getHtmlFileZipByFileName(fileName);
+				//	logger.debug("输入文件为：" + inputFileName + ", html文件压缩成zip的结果为：" + result);
+				//}
 				//if(result) {
 					//获取excel每个sheet转成的html文件名列表
 				//	List<String> list = getXlsxHtmlFileNameList(fileName);
