@@ -30,7 +30,7 @@ public class WaterToPdfUtil {
 	/* --- 生成的PDF是否为纵向，默认纵向 ---  */
 	public static final boolean IS_LEVEL_PDF = false;
 	/* --- 水印的文件颜色 ---  */
-	public static final BaseColor WATER_COLOR = BaseColor.BLUE;
+	public static final BaseColor WATER_COLOR = BaseColor.GRAY;
 	
     /**
           * 给PDF文件添加水印
@@ -96,8 +96,8 @@ public class WaterToPdfUtil {
                     ftHeight = rect.getHeight();
                 }
                 img.scalePercent(100f);
-                img.scaleAbsolute(400, 400);
-                img.setAbsolutePosition(ftWidth / 2 - 200, ftHeight / 2 - 200);
+                img.scaleAbsolute(50, 50);
+                img.setAbsolutePosition(ftWidth / 2 - 25, ftHeight / 2 - 25);
                 waterMarkContent.addImage(img);
                 waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 10, 50, 52);
                 waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth - 190, ftHeight - 260, 52);
