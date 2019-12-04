@@ -31,12 +31,6 @@ public class WaterToPdfUtil {
 	public static final boolean IS_LEVEL_PDF = false;
 	/* --- 水印的文件颜色 ---  */
 	public static final BaseColor WATER_COLOR = BaseColor.GRAY;
-	
-	public static void main(String[] args) {
-		WaterModel water = new WaterModel("jim", "jack", "", "中国移动云南分公司曲靖地区", "YN123456");
-		pdfToWater("c:/app/target.pdf", "c:/app/water.pdf", water);
-		System.out.println("===success===");
-	}
 
 	
     /**
@@ -104,18 +98,18 @@ public class WaterToPdfUtil {
                 }
                 img.scalePercent(100f);
  	            img.scaleAbsolute(50, 50);
- 	            img.setAbsolutePosition(50,50);
+ 	            img.setAbsolutePosition(50,80);
  	            waterMarkContent.addImage(img);
- 	            img.setAbsolutePosition(50,ftHeight - 300);
+ 	            img.setAbsolutePosition(50,ftHeight - 330);
  	            waterMarkContent.addImage(img);
- 	            img.setAbsolutePosition(ftWidth/2 + 50,50);
+ 	            img.setAbsolutePosition(ftWidth/2 + 50,80);
  	            waterMarkContent.addImage(img);
- 	            img.setAbsolutePosition(ftWidth/2 + 50,ftHeight - 300);
+ 	            img.setAbsolutePosition(ftWidth/2 + 50,ftHeight - 330);
  	            waterMarkContent.addImage(img);
- 	            waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 100, 100, 52);
- 	            waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth/2 + 100, 100, 52);
- 	            waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 100, ftHeight - 250, 52);
- 	            waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth/2 + 100, ftHeight - 250, 52);
+ 	            waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 100, 130, 52);
+ 	            waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth/2 + 100, 130, 52);
+ 	            waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 100, ftHeight - 280, 52);
+ 	            waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth/2 + 100, ftHeight - 280, 52);
  	            if (nFontsize-4>12){
                     nFontsize = 12;
                 }
