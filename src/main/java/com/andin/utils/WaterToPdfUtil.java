@@ -32,6 +32,13 @@ public class WaterToPdfUtil {
 	/* --- 水印的文件颜色 ---  */
 	public static final BaseColor WATER_COLOR = BaseColor.GRAY;
 	
+	public static void main(String[] args) {
+		WaterModel water = new WaterModel("jim", "jack", "", "中国移动云南分公司曲靖地区", "YN123456");
+		pdfToWater("c:/app/target.pdf", "c:/app/water.pdf", water);
+		System.out.println("===success===");
+	}
+
+	
     /**
           * 给PDF文件添加水印
      * @param inputFilePath /app/file/1.pdf
@@ -96,14 +103,20 @@ public class WaterToPdfUtil {
                     ftHeight = rect.getHeight();
                 }
                 img.scalePercent(100f);
-                img.scaleAbsolute(50, 50);
-                img.setAbsolutePosition(ftWidth / 2 - 25, ftHeight / 2 - 25);
-                waterMarkContent.addImage(img);
-                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 10, 50, 52);
-                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth - 190, ftHeight - 260, 52);
-                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 10, ftHeight - 260, 52);
-                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth - 190, 50, 52);
-                if (nFontsize-4>12){
+ 	            img.scaleAbsolute(50, 50);
+ 	            img.setAbsolutePosition(50,50);
+ 	            waterMarkContent.addImage(img);
+ 	            img.setAbsolutePosition(50,ftHeight - 300);
+ 	            waterMarkContent.addImage(img);
+ 	            img.setAbsolutePosition(ftWidth/2 + 50,50);
+ 	            waterMarkContent.addImage(img);
+ 	            img.setAbsolutePosition(ftWidth/2 + 50,ftHeight - 300);
+ 	            waterMarkContent.addImage(img);
+ 	            waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 100, 100, 52);
+ 	            waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth/2 + 100, 100, 52);
+ 	            waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 100, ftHeight - 250, 52);
+ 	            waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth/2 + 100, ftHeight - 250, 52);
+ 	            if (nFontsize-4>12){
                     nFontsize = 12;
                 }
                 //生成的PDF是否为纵向，默认为纵向
