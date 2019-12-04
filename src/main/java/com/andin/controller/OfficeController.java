@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -49,8 +50,8 @@ public class OfficeController {
 	
 	@RequestMapping(value="/pdfToWater", method=RequestMethod.POST)
 	@ResponseBody
-	public byte[] pdfToWater(@RequestPart("file") Part part, HttpServletRequest req, HttpServletResponse resp){
-		logger.debug("TestController.pdfToWater method execute is start...");
+	public Map<String, Object> pdfToWater(@RequestPart("file") Part part, HttpServletRequest req, HttpServletResponse resp){
+		logger.debug("OfficeController.pdfToWater method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		byte[] bytes = "".getBytes();
 		try {
@@ -85,6 +86,7 @@ public class OfficeController {
 					bytes = new byte[bin.available()];
 					bin.read(bytes);
 					bin.close();
+					map.put("data", Base64.getEncoder().encodeToString(bytes));
 					map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 					map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);				
 				}else {
@@ -93,7 +95,7 @@ public class OfficeController {
 				}
 				FileUtil.deleteFilePath(inputFilePath);
 				FileUtil.deleteFilePath(outputFilePath);
-				logger.debug("TestController.pdfToWater method execute is successful...");
+				logger.debug("OfficeController.pdfToWater method execute is successful...");
 			}else {
 				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.UPLOAD_FILE_TYPE_ERROR_CODE);
 				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.UPLOAD_FILE_TYPE_ERROR_MSG);
@@ -101,16 +103,16 @@ public class OfficeController {
 		} catch (Exception e) {
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
-			logger.error("TestController.pdfToWater method execute is error: ", e);
+			logger.error("OfficeController.pdfToWater method execute is error: ", e);
 		}
-		logger.debug("TestController.pdfToWater response is: [resultCode=" + map.get(ConstantUtil.RESULT_CODE) + "],[resultMsg=" + map.get(ConstantUtil.RESULT_MSG) + "]");
-		return bytes;
+		logger.debug("OfficeController.pdfToWater response is: [resultCode=" + map.get(ConstantUtil.RESULT_CODE) + "],[resultMsg=" + map.get(ConstantUtil.RESULT_MSG) + "]");
+		return map;
 	}
 	
 	@RequestMapping(value="/upload", method=RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> upload(HttpServletRequest req, @RequestParam("file") Part part){
-		logger.debug("TestController.upload method execute is start...");
+		logger.debug("OfficeController.upload method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			StringBuffer path = new StringBuffer();
@@ -139,11 +141,11 @@ public class OfficeController {
 			os.close();
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);
-			logger.debug("TestController.upload method execute is successful...");
+			logger.debug("OfficeController.upload method execute is successful...");
 		} catch (Exception e) {
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
-			logger.error("TestController.upload method execute is error: ", e);
+			logger.error("OfficeController.upload method execute is error: ", e);
 		}
 		return map;
 	}
@@ -151,7 +153,7 @@ public class OfficeController {
 	@RequestMapping(value="/download", method=RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Object> download(HttpServletRequest req, HttpServletResponse resp){
-		logger.debug("TestController.download method execute is start...");
+		logger.debug("OfficeController.download method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			String fileName = URLDecoder.decode(req.getParameter("name"), "UTF-8");
@@ -191,11 +193,11 @@ public class OfficeController {
 	        
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);
-			logger.debug("TestController.download method execute is successful...");
+			logger.debug("OfficeController.download method execute is successful...");
 		} catch (Exception e) {
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
-			logger.error("TestController.download method execute is error: ", e.getMessage());
+			logger.error("OfficeController.download method execute is error: ", e.getMessage());
 		}
 		return map;
 	}
@@ -203,7 +205,7 @@ public class OfficeController {
 	@RequestMapping(value="/officeToPdf", method=RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Object> officeToPdf(@RequestParam("name") String name){
-		logger.debug("TestController.officeToPdf method execute is start...");
+		logger.debug("OfficeController.officeToPdf method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			Future<Boolean> task = pool.submit(new OfficeThread(name));
@@ -214,11 +216,11 @@ public class OfficeController {
 				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.OFFICE_FILE_CONVERSION_ERROR_CODE);
 				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.OFFICE_FILE_CONVERSION_ERROR_MSG);
 			}
-			logger.debug("TestController.officeToPdf method execute is successful...");
+			logger.debug("OfficeController.officeToPdf method execute is successful...");
 		} catch (Exception e) {
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
-			logger.error("TestController.officeToPdf method execute is error: ", e.getMessage());
+			logger.error("OfficeController.officeToPdf method execute is error: ", e.getMessage());
 		}
 		return map;
 	}
