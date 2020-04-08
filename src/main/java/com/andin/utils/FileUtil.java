@@ -8,9 +8,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
+import org.apache.tools.zip.ZipEntry;
+import org.apache.tools.zip.ZipOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +61,7 @@ public class FileUtil {
 			logger.debug("FileUtil.getHtmlFileZipByFileName method get zip file list is: " + list.toString());
 			OutputStream os = new FileOutputStream(HTML_XLSX_PATH + fileName + ConstantUtil.ZIP);
 			ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(os));
+			zos.setEncoding("GBK");
 			for (String name : list) {
 				String fullFileName = HTML_XLSX_PATH + name;
 				File file = new File(fullFileName);

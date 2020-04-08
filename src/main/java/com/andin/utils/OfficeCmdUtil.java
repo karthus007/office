@@ -22,6 +22,8 @@ public class OfficeCmdUtil {
     
     private static final String WKHTMLTOPDF_CMD = "wkhtmltopdf ";
     
+    private static final String OFFICE_CMD = "unoconv -f pdf -o ";
+    
     private static final String MONO_CMD_PATH =  StringUtil.getUploadFilePath() + ConstantUtil.MONO_CMD_PATH;
     
     private static final String DOTNET_CMD_PATH = StringUtil.getUploadFilePath() + ConstantUtil.DOTNET_CMD_PATH;
@@ -108,6 +110,28 @@ public class OfficeCmdUtil {
 			logger.debug("OfficeUtil.htmlToPdf method executed is successful... "); 
 		} catch (Exception e) {
 			logger.error("OfficeUtil.htmlToPdf method executed is error: ", e); 
+		}
+		return result;
+	}
+	
+    /**
+          * 将office文件转换为pdf
+     * @param inputFileName
+     * @param outputFileName
+     * @param type
+     * @return
+     */
+	public static boolean officeToPdf(String inputFileName, String outputFileName) {
+		//执行转换命令
+		boolean result = false;
+		try {
+			//创建cmd命令
+			String cmd = OFFICE_CMD + outputFileName + " " + inputFileName;
+			logger.debug("OfficeCmdUtil.officeToPdf cmd is : " + cmd); 
+			result = CmdToolUtil.executeCmdToResult(cmd, null, null);
+			logger.debug("OfficeCmdUtil.officeToPdf method executed is successful... "); 
+		} catch (Exception e) {
+			logger.error("OfficeCmdUtil.officeToPdf method executed is error: ", e); 
 		}
 		return result;
 	}

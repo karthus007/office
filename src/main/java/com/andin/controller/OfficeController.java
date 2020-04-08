@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -43,12 +42,6 @@ public class OfficeController {
     private static Logger logger = LoggerFactory.getLogger(OfficeController.class);
     
     private static ExecutorService pool = Executors.newSingleThreadExecutor();
-    
-	private final static String PDF_DOCX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_DOCX_PATH;
-	
-	private final static String PDF_XLSX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_XLSX_PATH;
-	
-	private final static String PDF_PPTX_PATH = StringUtil.getUploadFilePath() + ConstantUtil.PDF_PPTX_PATH;
 
 	@Resource
 	private OfficeService officeService;
@@ -56,8 +49,8 @@ public class OfficeController {
 	
 	@RequestMapping(value="/pdfToWater", method=RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> pdfToWater(@RequestPart("file") Part part, HttpServletRequest req, HttpServletResponse resp){
-		logger.debug("OfficeController.pdfToWater method execute is start...");
+	public byte[] pdfToWater(@RequestPart("file") Part part, HttpServletRequest req, HttpServletResponse resp){
+		logger.debug("TestController.pdfToWater method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		byte[] bytes = "".getBytes();
 		try {
@@ -71,78 +64,53 @@ public class OfficeController {
 			StringBuffer path = new StringBuffer();
 			path.append(StringUtil.getUploadFilePath());
 			String fileName = part.getSubmittedFileName();
-			int index = fileName.lastIndexOf(".");
-			String lastFileName = fileName.substring(0, index);
-			String outputFilePath = null;
-			String officeInputFilePath = null;
 			if(fileName.endsWith(ConstantUtil.PDF)) {
 				path.append(ConstantUtil.PDF_PDF_PATH);
-				outputFilePath = path.toString() + ConstantUtil.WATER_PATH + fileName;
-			}else if(fileName.endsWith(ConstantUtil.DOC) || fileName.endsWith(ConstantUtil.DOCX)) {
-				path.append(ConstantUtil.DOCX_PATH);
-				officeInputFilePath = PDF_DOCX_PATH + lastFileName + ConstantUtil.PDF;
-				outputFilePath = PDF_DOCX_PATH  + ConstantUtil.WATER_PATH + lastFileName + ConstantUtil.PDF;
-			}else if(fileName.endsWith(ConstantUtil.XLS) || fileName.endsWith(ConstantUtil.XLSX)) {
-				path.append(ConstantUtil.XLSX_PATH);
-				officeInputFilePath = PDF_XLSX_PATH + lastFileName + ConstantUtil.PDF;
-				outputFilePath = PDF_XLSX_PATH + ConstantUtil.WATER_PATH + lastFileName + ConstantUtil.PDF;
-			}else if(fileName.endsWith(ConstantUtil.PPT) || fileName.endsWith(ConstantUtil.PPTX)) {
-				path.append(ConstantUtil.PPTX_PATH);
-				officeInputFilePath = PDF_PPTX_PATH + lastFileName + ConstantUtil.PDF;
-				outputFilePath = PDF_PPTX_PATH + ConstantUtil.WATER_PATH + lastFileName + ConstantUtil.PDF;
+				String inputFilePath = path.toString() + fileName;
+				InputStream in = part.getInputStream();
+				byte[] b = new byte[1024*4];
+				int len = 0;
+				OutputStream os = new FileOutputStream(inputFilePath);
+				while ((len = in.read(b)) != -1) {
+					os.write(b, 0, len);				
+				}
+				in.close();
+				os.close();
+				//PDF水印文件的生成路径
+				String outputFilePath = path.toString() + ConstantUtil.WATER_PATH + fileName;
+				//生成水印文件
+				boolean result = WaterToPdfUtil.pdfToWater(inputFilePath, outputFilePath, water);
+				if(result) {
+					InputStream bin = new FileInputStream(outputFilePath);
+					bytes = new byte[bin.available()];
+					bin.read(bytes);
+					bin.close();
+					map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
+					map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);				
+				}else {
+					map.put(ConstantUtil.RESULT_CODE, ConstantUtil.PDF_TO_WATER_ERROR_CODE);
+					map.put(ConstantUtil.RESULT_MSG, ConstantUtil.PDF_TO_WATER_ERROR_MSG);
+				}
+				FileUtil.deleteFilePath(inputFilePath);
+				FileUtil.deleteFilePath(outputFilePath);
+				logger.debug("TestController.pdfToWater method execute is successful...");
 			}else {
 				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.UPLOAD_FILE_TYPE_ERROR_CODE);
 				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.UPLOAD_FILE_TYPE_ERROR_MSG);
-				return map;
-			}
-			String inputFilePath = path.toString() + fileName;
-			InputStream in = part.getInputStream();
-			byte[] b = new byte[1024*4];
-			int len = 0;
-			OutputStream os = new FileOutputStream(inputFilePath);
-			while ((len = in.read(b)) != -1) {
-				os.write(b, 0, len);				
-			}
-			in.close();
-			os.close();
-			boolean result = false;
-			// 非PDF文件执行PDF任务转换, 生成水印文件
-			if(!fileName.endsWith(ConstantUtil.PDF)) {
-				Future<Boolean> task = pool.submit(new OfficeThread(fileName));
-				if(task.get()) {
-					result = WaterToPdfUtil.pdfToWater(officeInputFilePath, outputFilePath, water);
-				}
-			}else {
-				result = WaterToPdfUtil.pdfToWater(inputFilePath, outputFilePath, water);
-			}
-			if(result) {
-				InputStream bin = new FileInputStream(outputFilePath);
-				bytes = new byte[bin.available()];
-				bin.read(bytes);
-				bin.close();
-				map.put("data", Base64.getEncoder().encodeToString(bytes));
-				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
-				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);				
-			}else {
-				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.PDF_TO_WATER_ERROR_CODE);
-				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.PDF_TO_WATER_ERROR_MSG);
-			}
-			FileUtil.deleteFilePath(inputFilePath);
-			FileUtil.deleteFilePath(outputFilePath);
-			logger.debug("OfficeController.pdfToWater method execute is successful...");			
+			}			
 		} catch (Exception e) {
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
-			logger.error("OfficeController.pdfToWater method execute is error: ", e);
+			logger.error("TestController.pdfToWater method execute is error: ", e);
 		}
-		logger.debug("OfficeController.pdfToWater response is: [resultCode=" + map.get(ConstantUtil.RESULT_CODE) + "],[resultMsg=" + map.get(ConstantUtil.RESULT_MSG) + "]");
-		return map;
+		logger.debug("TestController.pdfToWater response is: [resultCode=" + map.get(ConstantUtil.RESULT_CODE) + "],[resultMsg=" + map.get(ConstantUtil.RESULT_MSG) + "]");
+		return bytes;
 	}
 	
 	@RequestMapping(value="/upload", method=RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> upload(HttpServletRequest req, @RequestParam("file") Part part){
-		logger.debug("OfficeController.upload method execute is start...");
+		logger.debug("TestController.upload method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			StringBuffer path = new StringBuffer();
@@ -171,11 +139,11 @@ public class OfficeController {
 			os.close();
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);
-			logger.debug("OfficeController.upload method execute is successful...");
+			logger.debug("TestController.upload method execute is successful...");
 		} catch (Exception e) {
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
-			logger.error("OfficeController.upload method execute is error: ", e);
+			logger.error("TestController.upload method execute is error: ", e);
 		}
 		return map;
 	}
@@ -183,7 +151,7 @@ public class OfficeController {
 	@RequestMapping(value="/download", method=RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Object> download(HttpServletRequest req, HttpServletResponse resp){
-		logger.debug("OfficeController.download method execute is start...");
+		logger.debug("TestController.download method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			String fileName = URLDecoder.decode(req.getParameter("name"), "UTF-8");
@@ -223,11 +191,11 @@ public class OfficeController {
 	        
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_SUCCESS_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_SUCCESS_MSG);
-			logger.debug("OfficeController.download method execute is successful...");
+			logger.debug("TestController.download method execute is successful...");
 		} catch (Exception e) {
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
-			logger.error("OfficeController.download method execute is error: ", e.getMessage());
+			logger.error("TestController.download method execute is error: ", e.getMessage());
 		}
 		return map;
 	}
@@ -235,7 +203,7 @@ public class OfficeController {
 	@RequestMapping(value="/officeToPdf", method=RequestMethod.GET)
 	@ResponseBody
 	public Map<String, Object> officeToPdf(@RequestParam("name") String name){
-		logger.debug("OfficeController.officeToPdf method execute is start...");
+		logger.debug("TestController.officeToPdf method execute is start...");
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			Future<Boolean> task = pool.submit(new OfficeThread(name));
@@ -246,11 +214,11 @@ public class OfficeController {
 				map.put(ConstantUtil.RESULT_CODE, ConstantUtil.OFFICE_FILE_CONVERSION_ERROR_CODE);
 				map.put(ConstantUtil.RESULT_MSG, ConstantUtil.OFFICE_FILE_CONVERSION_ERROR_MSG);
 			}
-			logger.debug("OfficeController.officeToPdf method execute is successful...");
+			logger.debug("TestController.officeToPdf method execute is successful...");
 		} catch (Exception e) {
 			map.put(ConstantUtil.RESULT_CODE, ConstantUtil.DEFAULT_ERROR_CODE);
 			map.put(ConstantUtil.RESULT_MSG, ConstantUtil.DEFAULT_ERROR_MSG);
-			logger.error("OfficeController.officeToPdf method execute is error: ", e.getMessage());
+			logger.error("TestController.officeToPdf method execute is error: ", e.getMessage());
 		}
 		return map;
 	}

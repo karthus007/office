@@ -30,8 +30,7 @@ public class WaterToPdfUtil {
 	/* --- 生成的PDF是否为纵向，默认纵向 ---  */
 	public static final boolean IS_LEVEL_PDF = false;
 	/* --- 水印的文件颜色 ---  */
-	public static final BaseColor WATER_COLOR = BaseColor.GRAY;
-
+	public static final BaseColor WATER_COLOR = BaseColor.BLUE;
 	
     /**
           * 给PDF文件添加水印
@@ -97,20 +96,14 @@ public class WaterToPdfUtil {
                     ftHeight = rect.getHeight();
                 }
                 img.scalePercent(100f);
- 	            img.scaleAbsolute(50, 50);
- 	            img.setAbsolutePosition(50,80);
- 	            waterMarkContent.addImage(img);
- 	            img.setAbsolutePosition(50,ftHeight - 330);
- 	            waterMarkContent.addImage(img);
- 	            img.setAbsolutePosition(ftWidth/2 + 50,80);
- 	            waterMarkContent.addImage(img);
- 	            img.setAbsolutePosition(ftWidth/2 + 50,ftHeight - 330);
- 	            waterMarkContent.addImage(img);
- 	            waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 100, 130, 52);
- 	            waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth/2 + 100, 130, 52);
- 	            waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 100, ftHeight - 280, 52);
- 	            waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth/2 + 100, ftHeight - 280, 52);
- 	            if (nFontsize-4>12){
+                img.scaleAbsolute(400, 400);
+                img.setAbsolutePosition(ftWidth / 2 - 200, ftHeight / 2 - 200);
+                waterMarkContent.addImage(img);
+                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 10, 50, 52);
+                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth - 190, ftHeight - 260, 52);
+                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, 10, ftHeight - 260, 52);
+                waterMarkContent.showTextAligned(PdfContentByte.ALIGN_LEFT, WATER_COM, ftWidth - 190, 50, 52);
+                if (nFontsize-4>12){
                     nFontsize = 12;
                 }
                 //生成的PDF是否为纵向，默认为纵向

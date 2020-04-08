@@ -135,7 +135,7 @@ public class OfficeLicense {
 	
     
     public static void main(String[] args) throws Exception {
-    	String key = "0736063dc126739482102446f3235d43";
+    	String key = "fa2082386a1a2074833d4e105e1f1b2e";
     	String path = "d:/app/";
         getLicenseFileByKey(key, path);
         System.out.println("====get license method executed is successful====");        
