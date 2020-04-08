@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.andin</groupId>
-	<artifactId>office</artifactId>
+	<artifactId>htmloffice</artifactId>
 	<version>1.0</version>
 	<packaging>war</packaging>
 	<name>office</name>
